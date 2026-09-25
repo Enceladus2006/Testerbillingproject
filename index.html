@@ -196,6 +196,25 @@
             white-space: nowrap;
         }
 
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: #27ae60;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: .78rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-download:hover {
+            background-color: #219653;
+        }
+
         .filter-panel {
             width: 100%;
             max-width: 1200px;
@@ -302,6 +321,7 @@
             .spb-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
             .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
             .spb-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
+            .spb-table tr.clickable-row td:nth-child(8)::before { content: "Aksi"; }
             .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
             .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
@@ -309,6 +329,7 @@
             .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
             .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
             .bunker-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
+            .bunker-table tr.clickable-row td:nth-child(8)::before { content: "Aksi"; }
             tr:not(.clickable-row) td { padding: 18px 10px; font-size: .78rem; }
             code { white-space: normal; overflow-wrap: anywhere; }
         }
@@ -384,10 +405,11 @@
                         <th>Tipe Pengajuan</th>
                         <th>Kode Billing</th>
                         <th>Tenggang Waktu</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="spbTbody">
-                    <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
+                    <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -407,10 +429,11 @@
                         <th>Tipe Pengajuan</th>
                         <th>Kode Billing</th>
                         <th>Tenggang Waktu</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="bunkerTbody">
-                    <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                    <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -422,6 +445,7 @@
 <script>
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIHSAwWWNdjeLPTJdM83WsWAAsH3XJB7kbqGOKuCwCAx8odVRZ0PXUbHOJ_HPHBi7US4QmO_bjQg76/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIHSAwWWNdjeLPTJdM83WsWAAsH3XJB7kbqGOKuCwCAx8odVRZ0PXUbHOJ_HPHBi7US4QmO_bjQg76/pub?gid=502455271&single=true&output=csv";
+const gdriveFolderUrl = "https://drive.google.com/drive/folders/1X3bTOpljxZMdj0E0e8pf6JsCOGcT2vkQ";
 const autoRefreshSeconds = 300;
 
 function parseCSV(text) {
@@ -504,18 +528,19 @@ async function loadTableData(url, tbodyId, type) {
                 dateVal        = row[5] || '';
                 agentName      = row[8] || '';
                 billingCode    = row[9] || '';
-                submissionType = row[10] || ''; // Column K
+                submissionType = row[10] || '';
             } else {
                 vesselName     = row[1] || '';
                 agentName      = row[7] || '';
                 dateVal        = row[8] || '';
                 billingCode    = row[9] || '';
-                submissionType = row[10] || ''; // Column K
+                submissionType = row[10] || '';
             }
 
             if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
 
             const aging = getAgingStyle(dateVal);
+            const pdfDriveSearchUrl = `${gdriveFolderUrl}?q=${encodeURIComponent(billingCode)}`;
 
             html += `
             <tr class="clickable-row ${aging.class}"
@@ -532,18 +557,23 @@ async function loadTableData(url, tbodyId, type) {
                 <td>${escapeHtml(submissionType)}</td>
                 <td><code>${escapeHtml(billingCode)}</code></td>
                 <td>${aging.text}</td>
+                <td>
+                    <a href="${pdfDriveSearchUrl}" target="_blank" class="btn-download" onclick="event.stopPropagation();">
+                        📄 Unduh PDF
+                    </a>
+                </td>
             </tr>`;
         });
 
         if (count === 1) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
         } else {
             tbody.innerHTML = html;
             attachRowClickEvents();
         }
     } catch (err) {
         console.error("Failed to load data:", err);
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
 }
 
@@ -633,4 +663,3 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </body>
 </html>
-
