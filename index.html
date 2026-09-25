@@ -449,7 +449,7 @@ const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIHSAwWWN
 
 // GOOGLE DRIVE CONFIGURATION
 const GDRIVE_FOLDER_ID = "1X3bTOpljxZMdj0E0e8pf6JsCOGcT2vkQ";
-const GDRIVE_API_KEY = "AIzaSyDU5RYaK-FdrPmsemwgm-Aq5AINPUkzgCA"; // Replace with your actual Google Cloud API key
+const GDRIVE_API_KEY = "YOUR_VALID_GOOGLE_DRIVE_API_KEY_HERE"; // Ensure you replace this with a valid, unrestricted Google Drive API Key
 
 const autoRefreshSeconds = 300;
 
@@ -520,33 +520,37 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// AUTO DOWNLOAD / CHECK GOOGLE DRIVE FUNCTION
+// CHECK GOOGLE DRIVE & DOWNLOAD PDF
 async function downloadPdf(billingCode) {
     if (!billingCode) return;
 
-    if (GDRIVE_API_KEY === "AIzaSyDU5RYaK-FdrPmsemwgm-Aq5AINPUkzgCA") {
-        // Fallback search link if API key is not yet replaced
-        window.open(`https://drive.google.com/drive/folders/${GDRIVE_FOLDER_ID}?q=${encodeURIComponent(billingCode)}`, '_blank');
+    showToast("Mencari berkas PDF...");
+
+    if (!GDRIVE_API_KEY || GDRIVE_API_KEY.includes("YOUR_VALID_GOOGLE_DRIVE_API_KEY_HERE")) {
+        showToast("⚠️ Google Drive API Key belum disetting!");
         return;
     }
 
-    showToast("Mencari berkas PDF...");
-
     const query = `'${GDRIVE_FOLDER_ID}' in parents and name contains '${billingCode}' and trashed = false`;
-    const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,webContentLink)&key=${GDRIVE_API_KEY}`;
+    const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,webContentLink,webViewerLink)&key=${GDRIVE_API_KEY}`;
 
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
 
+        if (data.error) {
+            console.error("Drive API Error:", data.error);
+            showToast("❌ Gagal terhubung ke Google Drive API.");
+            return;
+        }
+
         if (data.files && data.files.length > 0) {
-            // File found -> trigger direct download/open link
-            const downloadUrl = data.files[0].webContentLink;
+            const targetFile = data.files[0];
+            const downloadUrl = targetFile.webContentLink || targetFile.webViewerLink;
             window.open(downloadUrl, '_blank');
-            showToast(`Mengunduh berkas ${data.files[0].name}...`);
+            showToast(`Mengunduh berkas ${targetFile.name}...`);
         } else {
-            // File not found -> show error notification
-            showToast(`⚠️ File PDF untuk Kode Billing ${billingCode} tidak ditemukan!`);
+            showToast(`⚠️ File PDF tidak ditemukan! (${billingCode})`);
         }
     } catch (err) {
         console.error("Gagal terhubung ke Google Drive API:", err);
