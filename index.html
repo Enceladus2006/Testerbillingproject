@@ -202,12 +202,13 @@
             gap: 4px;
             background-color: #27ae60;
             color: #ffffff;
-            padding: 5px 10px;
+            border: 0;
+            padding: 6px 12px;
             border-radius: 4px;
-            text-decoration: none;
             font-size: .78rem;
             font-weight: 600;
             white-space: nowrap;
+            cursor: pointer;
             transition: background-color 0.2s ease;
         }
 
@@ -265,12 +266,12 @@
 
         #toast {
             visibility: hidden;
-            width: min(92vw, 430px);
+            width: min(92vw, 450px);
             background-color: #263b50;
             color: #fff;
             text-align: center;
             border-radius: 8px;
-            padding: 12px;
+            padding: 12px 16px;
             position: fixed;
             z-index: 10;
             left: 50%;
@@ -280,7 +281,7 @@
             box-shadow: 0 4px 14px rgba(0,0,0,.3);
         }
 
-        #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.2s; }
+        #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.7s; }
 
         @keyframes fadein {
             from { bottom: 0; opacity: 0; }
@@ -445,7 +446,11 @@
 <script>
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIHSAwWWNdjeLPTJdM83WsWAAsH3XJB7kbqGOKuCwCAx8odVRZ0PXUbHOJ_HPHBi7US4QmO_bjQg76/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIHSAwWWNdjeLPTJdM83WsWAAsH3XJB7kbqGOKuCwCAx8odVRZ0PXUbHOJ_HPHBi7US4QmO_bjQg76/pub?gid=502455271&single=true&output=csv";
-const gdriveFolderUrl = "https://drive.google.com/drive/folders/1X3bTOpljxZMdj0E0e8pf6JsCOGcT2vkQ";
+
+// GOOGLE DRIVE CONFIGURATION
+const GDRIVE_FOLDER_ID = "1X3bTOpljxZMdj0E0e8pf6JsCOGcT2vkQ";
+const GDRIVE_API_KEY = "YOUR_GOOGLE_DRIVE_API_KEY"; // Replace with your actual Google Cloud API key
+
 const autoRefreshSeconds = 300;
 
 function parseCSV(text) {
@@ -508,6 +513,47 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+// AUTO DOWNLOAD / CHECK GOOGLE DRIVE FUNCTION
+async function downloadPdf(billingCode) {
+    if (!billingCode) return;
+
+    if (GDRIVE_API_KEY === "YOUR_GOOGLE_DRIVE_API_KEY") {
+        // Fallback search link if API key is not yet replaced
+        window.open(`https://drive.google.com/drive/folders/${GDRIVE_FOLDER_ID}?q=${encodeURIComponent(billingCode)}`, '_blank');
+        return;
+    }
+
+    showToast("Mencari berkas PDF...");
+
+    const query = `'${GDRIVE_FOLDER_ID}' in parents and name contains '${billingCode}' and trashed = false`;
+    const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,webContentLink)&key=${GDRIVE_API_KEY}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.files && data.files.length > 0) {
+            // File found -> trigger direct download/open link
+            const downloadUrl = data.files[0].webContentLink;
+            window.open(downloadUrl, '_blank');
+            showToast(`Mengunduh berkas ${data.files[0].name}...`);
+        } else {
+            // File not found -> show error notification
+            showToast(`⚠️ File PDF untuk Kode Billing ${billingCode} tidak ditemukan!`);
+        }
+    } catch (err) {
+        console.error("Gagal terhubung ke Google Drive API:", err);
+        showToast("❌ Gagal terhubung ke Google Drive API.");
+    }
+}
+
 async function loadTableData(url, tbodyId, type) {
     const tbody = document.getElementById(tbodyId);
     try {
@@ -540,7 +586,6 @@ async function loadTableData(url, tbodyId, type) {
             if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
 
             const aging = getAgingStyle(dateVal);
-            const pdfDriveSearchUrl = `${gdriveFolderUrl}?q=${encodeURIComponent(billingCode)}`;
 
             html += `
             <tr class="clickable-row ${aging.class}"
@@ -558,9 +603,9 @@ async function loadTableData(url, tbodyId, type) {
                 <td><code>${escapeHtml(billingCode)}</code></td>
                 <td>${aging.text}</td>
                 <td>
-                    <a href="${pdfDriveSearchUrl}" target="_blank" class="btn-download" onclick="event.stopPropagation();">
+                    <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
                         📄 Unduh PDF
-                    </a>
+                    </button>
                 </td>
             </tr>`;
         });
@@ -578,15 +623,12 @@ async function loadTableData(url, tbodyId, type) {
 }
 
 function attachRowClickEvents() {
-    const toast = document.getElementById("toast");
     document.querySelectorAll(".clickable-row").forEach(row => {
         row.onclick = function() {
             const billingCode = this.getAttribute("data-billing");
             if (!billingCode) return;
             navigator.clipboard.writeText(billingCode).then(() => {
-                toast.textContent = "Berhasil Menyalin: " + billingCode;
-                toast.classList.add("show");
-                setTimeout(() => toast.classList.remove("show"), 2200);
+                showToast("Berhasil Menyalin: " + billingCode);
             }).catch(err => console.error("Gagal menyalin kode: ", err));
         };
     });
