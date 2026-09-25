@@ -449,7 +449,7 @@ const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIHSAwWWN
 
 // GOOGLE DRIVE CONFIGURATION
 const GDRIVE_FOLDER_ID = "1X3bTOpljxZMdj0E0e8pf6JsCOGcT2vkQ";
-const GDRIVE_API_KEY = "YOUR_GOOGLE_DRIVE_API_KEY"; // Replace with your actual Google Cloud API key
+const GDRIVE_API_KEY = "AIzaSyDU5RYaK-FdrPmsemwgm-Aq5AINPUkzgCA"; // Replace with your actual Google Cloud API key
 
 const autoRefreshSeconds = 300;
 
@@ -524,7 +524,7 @@ function showToast(message) {
 async function downloadPdf(billingCode) {
     if (!billingCode) return;
 
-    if (GDRIVE_API_KEY === "AIzaSyDU5RYaK-FdrPmsemwgm-Aq5AINPUkzgCA") {
+    if (GDRIVE_API_KEY === "YOUR_GOOGLE_DRIVE_API_KEY") {
         // Fallback search link if API key is not yet replaced
         window.open(`https://drive.google.com/drive/folders/${GDRIVE_FOLDER_ID}?q=${encodeURIComponent(billingCode)}`, '_blank');
         return;
