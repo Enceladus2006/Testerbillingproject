@@ -448,8 +448,8 @@ const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6Uy
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
 
 // GOOGLE DRIVE CONFIGURATION
-const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz?hl=ID";
-const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU"; // Ensure you replace this with a valid, unrestricted Google Drive API Key
+const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
+const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
 
 const autoRefreshSeconds = 300;
 
@@ -532,7 +532,7 @@ async function downloadPdf(billingCode) {
     }
 
     const query = `'${GDRIVE_FOLDER_ID}' in parents and name contains '${billingCode}' and trashed = false`;
-    const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,webContentLink,webViewerLink)&key=${GDRIVE_API_KEY}`;
+    const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)&key=${GDRIVE_API_KEY}`;
 
     try {
         const response = await fetch(apiUrl);
@@ -540,15 +540,15 @@ async function downloadPdf(billingCode) {
 
         if (data.error) {
             console.error("Drive API Error:", data.error);
-            showToast("❌ Gagal terhubung ke Google Drive API.");
+            showToast("❌ API Error: " + (data.error.message || "Gagal terhubung"));
             return;
         }
 
         if (data.files && data.files.length > 0) {
             const targetFile = data.files[0];
-            const downloadUrl = targetFile.webContentLink || targetFile.webViewerLink;
-            window.open(downloadUrl, '_blank');
-            showToast(`Mengunduh berkas ${targetFile.name}...`);
+            const directUrl = `https://drive.google.com/file/d/${targetFile.id}/view?usp=sharing`;
+            window.open(directUrl, '_blank');
+            showToast(`Membuka berkas ${targetFile.name}...`);
         } else {
             showToast(`⚠️ File PDF tidak ditemukan! (${billingCode})`);
         }
