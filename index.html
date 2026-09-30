@@ -646,6 +646,7 @@ function switchTab(type) {
         document.getElementById('nav-bunker').classList.add('active');
         document.getElementById('tab-title').innerText = "Dashboard Monitoring Tagihan Bunker";
     }
+    applyFilterAndSort();
 }
 
 function openLoginModal() { document.getElementById('loginModal').classList.add('active'); }
@@ -681,18 +682,22 @@ function parseCSV(text) {
     return result;
 }
 
-function getAgingStyle(dateString) {
-    if (!dateString) return { class: 'expire-safe', text: '0 Hari' };
+function getTimestamp(dateString) {
+    if (!dateString) return 0;
     const cleanDate = dateString.replace(/\//g, '-');
-    let timestamp = 0;
     const parts = cleanDate.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
     if (parts) {
-        timestamp = new Date(Number(parts[3]), Number(parts[2]) - 1, Number(parts[1])).getTime();
-    } else {
-        timestamp = Date.parse(cleanDate);
+        return new Date(Number(parts[3]), Number(parts[2]) - 1, Number(parts[1])).getTime();
     }
+    const parsed = Date.parse(cleanDate);
+    return isNaN(parsed) ? 0 : parsed;
+}
 
-    if (isNaN(timestamp) || timestamp <= 0) return { class: 'expire-safe', text: '-' };
+function getAgingStyle(dateString) {
+    if (!dateString) return { class: 'expire-safe', text: '0 Hari' };
+    const timestamp = getTimestamp(dateString);
+
+    if (timestamp <= 0) return { class: 'expire-safe', text: '-' };
 
     const diffSeconds = Math.floor((Date.now() - timestamp) / 1000);
     let daysOld = Math.floor(diffSeconds / (60 * 60 * 24));
@@ -786,7 +791,7 @@ async function loadTableData(url, tbodyId, type) {
                 data-date="${escapeHtml(dateVal)}"
                 data-vessel="${escapeHtml(vesselName)}"
                 data-agent="${escapeHtml(agentName)}">
-                <td>${count}</td>
+                <td class="row-number">${count}</td>
                 <td>${escapeHtml(dateVal)}</td>
                 <td><strong>${escapeHtml(vesselName)}</strong></td>
                 <td>${escapeHtml(agentName)}</td>
@@ -826,9 +831,85 @@ function attachRowClickEvents() {
     });
 }
 
+function applyFilterAndSort() {
+    const activeSection = document.querySelector('.tab-section.active');
+    if (!activeSection) return;
+
+    const tbody = activeSection.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr.clickable-row'));
+
+    const searchVal = document.getElementById('globalFilter').value.trim().toLowerCase();
+    const columnVal = document.getElementById('columnFilter').value;
+    const sortVal = document.getElementById('dateSort').value;
+
+    let visibleIndex = 1;
+
+    // Filter rows
+    rows.forEach(row => {
+        const date = (row.getAttribute('data-date') || '').toLowerCase();
+        const vessel = (row.getAttribute('data-vessel') || '').toLowerCase();
+        const agent = (row.getAttribute('data-agent') || '').toLowerCase();
+        const billing = (row.getAttribute('data-billing') || '').toLowerCase();
+
+        let matches = false;
+
+        if (!searchVal) {
+            matches = true;
+        } else if (columnVal === 'date') {
+            matches = date.includes(searchVal);
+        } else if (columnVal === 'vessel') {
+            matches = vessel.includes(searchVal);
+        } else if (columnVal === 'agent') {
+            matches = agent.includes(searchVal);
+        } else if (columnVal === 'billing') {
+            matches = billing.includes(searchVal);
+        } else {
+            matches = date.includes(searchVal) ||
+                      vessel.includes(searchVal) ||
+                      agent.includes(searchVal) ||
+                      billing.includes(searchVal);
+        }
+
+        if (matches) {
+            row.classList.remove('hidden-row');
+        } else {
+            row.classList.add('hidden-row');
+        }
+    });
+
+    // Sort visible rows by Date if selected
+    if (sortVal !== 'none') {
+        rows.sort((a, b) => {
+            const dateA = getTimestamp(a.getAttribute('data-date'));
+            const dateB = getTimestamp(b.getAttribute('data-date'));
+            return sortVal === 'newest' ? dateB - dateA : dateA - dateB;
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    // Re-index displayed row numbers
+    rows.filter(row => !row.classList.contains('hidden-row')).forEach(row => {
+        const numCell = row.querySelector('.row-number');
+        if (numCell) numCell.innerText = visibleIndex++;
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     loadTableData(csvUrlSPB, "spbTbody", "spb");
     loadTableData(csvUrlBunker, "bunkerTbody", "bunker");
+
+    // Event Listeners for Filters
+    document.getElementById('globalFilter').addEventListener('input', applyFilterAndSort);
+    document.getElementById('columnFilter').addEventListener('change', applyFilterAndSort);
+    document.getElementById('dateSort').addEventListener('change', applyFilterAndSort);
+
+    document.getElementById('resetFilter').addEventListener('click', function() {
+        document.getElementById('globalFilter').value = '';
+        document.getElementById('columnFilter').value = 'all';
+        document.getElementById('dateSort').value = 'none';
+        applyFilterAndSort();
+    });
 });
 </script>
 </body>
