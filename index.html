@@ -2,441 +2,572 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring Tagihan Belum Lunas (SPB & BUNKER)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f3f6f9;
+            --bg-color: #ecf0f5;
             --card-bg: #ffffff;
-            --text-color: #263238;
-            --muted: #607d8b;
-            --border-color: #dfe5ea;
-            --primary: #005baa;
-            --primary-dark: #003f7d;
-            --gold: #d4a72c;
+            --text-color: #333333;
+            --muted: #777777;
+            --border-color: #d2d6de;
+            --primary: #3c8dbc;
+            --primary-dark: #367fa9;
+            --sidebar-bg: #222d32;
+            --sidebar-hover: #1e282c;
+            --sidebar-text: #b8c7ce;
+            --topbar-bg: #3c8dbc;
+            --gold: #f39c12;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
-            padding: 0 12px 24px;
+            display: flex;
+            min-height: 100vh;
         }
 
+        /* --- SIDEBAR STYLE --- */
+        .sidebar {
+            width: 230px;
+            background: var(--sidebar-bg);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-brand {
+            height: 50px;
+            background: var(--primary-dark);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .user-panel {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1a2226;
+            color: #fff;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-info { font-size: 0.8rem; }
+        .user-status { font-size: 0.7rem; color: #2ecc71; }
+
+        .nav-title {
+            padding: 10px 15px 5px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #4b646f;
+            font-weight: bold;
+        }
+
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            border-left: 3px solid transparent;
+            transition: 0.2s;
+        }
+
+        .sidebar-menu li a:hover, .sidebar-menu li.active a {
+            background: var(--sidebar-hover);
+            color: #fff;
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu i { width: 20px; font-size: 0.9rem; }
+        .badge-count {
+            margin-left: auto;
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+        }
+
+        /* --- MAIN CONTENT LAYOUT --- */
+        .wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- TOP HEADER --- */
+        .top-navbar {
+            height: 50px;
+            background: var(--topbar-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            color: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-navbar .toggle-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .user-actions { display: flex; align-items: center; gap: 15px; }
+
+        .btn-login-modal {
+            background: #ffffff;
+            color: var(--primary-dark);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-login-modal:hover { background: #f1f1f1; }
+
+        /* --- CONTENT BODY --- */
+        .content-body { padding: 15px; }
+
         .official-header {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto 18px;
             background: #fff;
-            border-bottom: 4px solid var(--gold);
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            padding: 14px 16px 12px;
+            border-bottom: 3px solid var(--gold);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .official-header-inner {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 15px;
         }
 
-        .official-logo {
-            width: 62px;
-            height: 72px;
-            object-fit: contain;
-            flex: 0 0 auto;
+        .official-logo { width: 50px; height: 50px; object-fit: contain; }
+
+        .official-title { text-align: center; color: #17324d; }
+        .official-title .ministry { font-size: 0.75rem; font-weight: 700; }
+        .official-title .office { font-size: 1rem; font-weight: 800; }
+        .official-title .location { font-size: 0.8rem; font-weight: 700; }
+
+        .page-title {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #333;
         }
 
-        .official-title {
-            text-align: center;
-            line-height: 1.25;
-            color: #17324d;
+        .subtitle { color: var(--muted); font-size: 0.8rem; margin-bottom: 15px; }
+
+        /* --- LEGEND & FILTER --- */
+        .legend, .filter-panel {
+            background: #fff;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
         }
 
-        .official-title .ministry {
-            font-size: .82rem;
-            font-weight: 700;
-            letter-spacing: .4px;
+        .legend { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.8rem; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .color-box { width: 14px; height: 14px; border-radius: 2px; border: 1px solid #ccc; }
+
+        .filter-title { font-weight: bold; margin-bottom: 8px; font-size: 0.85rem; color: #444; }
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto;
+            gap: 10px;
         }
 
-        .official-title .office {
-            font-size: 1.18rem;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .official-title .location {
-            font-size: .88rem;
-            font-weight: 700;
-            margin-top: 2px;
-        }
-
-        .header-section {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto 16px;
-            text-align: center;
-        }
-
-        h1 {
-            margin: 0 0 4px;
-            color: #263b50;
-            font-size: clamp(1.15rem, 4vw, 1.8rem);
-        }
-
-        .subtitle {
-            color: var(--muted);
-            font-size: .88rem;
-        }
-
-        .legend {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto 18px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px 16px;
-            background: var(--card-bg);
-            padding: 10px 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,.05);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: .78rem;
-        }
-
-        .color-box {
-            width: 14px;
-            height: 14px;
+        .filter-controls input, .filter-controls select, .filter-controls button {
+            padding: 6px 10px;
+            border: 1px solid #d2d6de;
             border-radius: 3px;
-            border: 1px solid rgba(0,0,0,.1);
-            flex: 0 0 auto;
+            font-size: 0.8rem;
         }
 
+        .filter-controls button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .filter-controls button:hover { background: var(--primary-dark); }
+
+        /* --- SEPARATED BILL TABLES --- */
         .dashboard-grid {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .column {
-            width: 100%;
-            min-width: 0;
+        .box-table {
+            background: #fff;
+            border-top: 3px solid var(--primary);
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .column-header {
-            padding: 12px 14px;
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            color: #fff;
-            border-radius: 9px 9px 0 0;
-            font-weight: 700;
-            text-align: center;
-            font-size: .95rem;
-            letter-spacing: .25px;
+        .box-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #f4f4f4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
+        .box-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #444;
+        }
+
+        /* Firm and Separated Table Styles */
         .table-responsive {
-            background: var(--card-bg);
-            border-radius: 0 0 9px 9px;
-            box-shadow: 0 3px 8px rgba(0,0,0,.07);
             overflow-x: auto;
-            border: 1px solid var(--border-color);
-            border-top: 0;
-            max-height: 70vh;
-            overflow-y: auto;
+            max-height: 60vh;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             text-align: left;
         }
 
         th, td {
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: .84rem;
-            vertical-align: middle;
+            padding: 9px 12px;
+            font-size: 0.8rem;
+            border-bottom: 1px solid #e0e0e0;
+            border-right: 1px solid #f0f0f0;
         }
 
+        th:last-child, td:last-child { border-right: none; }
+
         th {
-            background: #f7f9fb;
-            color: #30485f;
+            background: #f8f9fa;
+            color: #333;
             font-weight: 700;
             position: sticky;
             top: 0;
-            z-index: 5;
+            z-index: 2;
+            border-bottom: 2px solid #d2d6de;
         }
 
-        .expire-safe { background-color: #fff; }
-        .expire-warning { background-color: #fff3cd; color: #856404; }
-        .expire-critical { background-color: #f8d7da; color: #721c24; font-weight: 600; }
-        .expire-expired { background-color: #e2e3e5; color: #343a40; font-weight: 700; }
+        tr.clickable-row { cursor: pointer; transition: background 0.15s; }
+        tr.clickable-row:hover { filter: brightness(0.96); }
 
-        tr.clickable-row { cursor: pointer; }
-        tr.clickable-row:hover { filter: brightness(.97); }
+        /* Status Colors */
+        .expire-safe { background-color: #ffffff; }
+        .expire-warning { background-color: #fcf8e3; color: #8a6d3b; }
+        .expire-critical { background-color: #f2dede; color: #a94442; font-weight: bold; }
+        .expire-expired { background-color: #e2e3e5; color: #383d41; font-weight: bold; }
 
         code {
-            font-family: Consolas, monospace;
-            background: #eef2f5;
-            padding: 3px 5px;
-            border-radius: 4px;
-            font-size: .84em;
-            white-space: nowrap;
+            font-family: monospace;
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
         }
 
         .btn-download {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background-color: #27ae60;
-            color: #ffffff;
-            border: 0;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: .78rem;
-            font-weight: 600;
-            white-space: nowrap;
+            background-color: #00a65a;
+            color: #fff;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: background-color 0.2s ease;
         }
 
-        .btn-download:hover {
-            background-color: #219653;
-        }
+        .btn-download:hover { background-color: #008d4c; }
 
-        .filter-panel {
+        /* --- LOGIN MODAL STYLE --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto 18px;
-            background: #fff;
-            border: 1px solid var(--border-color);
-            border-radius: 9px;
-            box-shadow: 0 3px 8px rgba(0,0,0,.06);
-            padding: 12px;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
         }
-        .filter-title {
-            font-weight: 700;
-            color: #30485f;
-            margin-bottom: 9px;
-            font-size: .9rem;
+
+        .modal-content {
+            background-color: #fff;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: modalFadeIn 0.3s;
         }
-        .filter-controls {
-            display: grid;
-            grid-template-columns: minmax(180px, 1.5fr) minmax(150px, .9fr) minmax(150px, .9fr) auto;
-            gap: 8px;
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .filter-controls input,
-        .filter-controls select,
-        .filter-controls button {
-            min-height: 40px;
-            border: 1px solid #cfd8df;
-            border-radius: 6px;
-            padding: 8px 10px;
-            font: inherit;
-            font-size: .82rem;
+
+        .modal-header {
+            background: var(--sidebar-bg);
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .filter-controls button {
+
+        .modal-header h3 { font-size: 1rem; }
+        .close-modal { color: #fff; font-size: 1.2rem; cursor: pointer; }
+
+        .modal-body { padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 5px; font-weight: bold; }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .btn-login-submit {
+            width: 100%;
             background: var(--primary);
             color: #fff;
-            border: 0;
+            border: none;
+            padding: 9px;
+            border-radius: 3px;
+            font-weight: bold;
             cursor: pointer;
-            font-weight: 700;
-            padding: 8px 16px;
         }
-        .filter-controls button:hover { background: var(--primary-dark); }
-        .filter-info {
-            margin-top: 8px;
-            color: var(--muted);
-            font-size: .74rem;
-            line-height: 1.35;
-        }
-        .hidden-row { display: none !important; }
 
+        .btn-login-submit:hover { background: var(--primary-dark); }
+
+        /* TOAST */
         #toast {
             visibility: hidden;
-            width: min(92vw, 450px);
-            background-color: #263b50;
+            min-width: 250px;
+            background-color: #333;
             color: #fff;
             text-align: center;
-            border-radius: 8px;
-            padding: 12px 16px;
+            border-radius: 4px;
+            padding: 10px;
             position: fixed;
-            z-index: 10;
+            z-index: 1001;
             left: 50%;
-            bottom: 20px;
+            bottom: 30px;
             transform: translateX(-50%);
-            font-size: .9rem;
-            box-shadow: 0 4px 14px rgba(0,0,0,.3);
+            font-size: 0.85rem;
         }
 
-        #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.7s; }
+        #toast.show { visibility: visible; }
 
-        @keyframes fadein {
-            from { bottom: 0; opacity: 0; }
-            to { bottom: 20px; opacity: 1; }
-        }
+        .hidden-row { display: none !important; }
 
-        @keyframes fadeout {
-            from { bottom: 20px; opacity: 1; }
-            to { bottom: 0; opacity: 0; }
-        }
-
-        @media (max-width: 700px) {
-            body { padding: 0 8px 20px; }
-            .official-header { margin-bottom: 14px; padding: 12px 8px 10px; }
-            .official-header-inner { gap: 9px; }
-            .official-logo { width: 48px; height: 58px; }
-            .official-title .ministry { font-size: .65rem; }
-            .official-title .office { font-size: .88rem; }
-            .official-title .location { font-size: .68rem; }
-            .header-section { margin-bottom: 12px; }
-            h1 { font-size: 1.05rem; }
-            .subtitle { font-size: .75rem; line-height: 1.35; }
-            .legend { justify-content: flex-start; gap: 7px 12px; margin-bottom: 14px; padding: 9px 10px; }
-            .legend-item { font-size: .7rem; }
-            .filter-controls { grid-template-columns: 1fr; }
-            .filter-controls input, .filter-controls select, .filter-controls button { width: 100%; }
-            .column-header { font-size: .82rem; padding: 11px 8px; }
-            .table-responsive { max-height: none; overflow: visible; }
-            table, thead, tbody, tr, th, td { display: block; width: 100%; }
-            thead { display: none; }
-            tr.clickable-row { position: relative; margin: 0; padding: 8px 10px; border-bottom: 1px solid var(--border-color); }
-            tr.clickable-row td { display: grid; grid-template-columns: 42% 58%; gap: 6px; padding: 5px 0; border: 0; font-size: .78rem; word-break: break-word; }
-            tr.clickable-row td::before { font-weight: 700; color: #607d8b; }
-            .spb-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
-            .spb-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Berangkat"; }
-            .spb-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
-            .spb-table tr.clickable-row td:nth-child(4)::before { content: "Agen / Pemilik"; }
-            .spb-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
-            .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
-            .spb-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
-            .spb-table tr.clickable-row td:nth-child(8)::before { content: "Aksi"; }
-            .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
-            .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
-            .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
-            .bunker-table tr.clickable-row td:nth-child(4)::before { content: "Pemohon / No.HP"; }
-            .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
-            .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
-            .bunker-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
-            .bunker-table tr.clickable-row td:nth-child(8)::before { content: "Aksi"; }
-            tr:not(.clickable-row) td { padding: 18px 10px; font-size: .78rem; }
-            code { white-space: normal; overflow-wrap: anywhere; }
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .sidebar-brand, .user-info, .nav-title, .menu-text { display: none; }
+            .sidebar-menu li a { justify-content: center; padding: 12px; }
+            .sidebar-menu i { margin: 0; }
         }
     </style>
 </head>
 <body>
 
-<header class="official-header">
-    <div class="official-header-inner">
-        <img
-            class="official-logo"
-            src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg"
-            alt="Logo Kementerian Perhubungan"
-        >
-        <div class="official-title">
-            <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
-            <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
-            <div class="location">KELAS III LABUAN BAJO</div>
+<!-- LEFT NAVIGATION PANEL -->
+<aside class="sidebar">
+    <div class="sidebar-brand">SIMPADU</div>
+    <div class="user-panel">
+        <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+        <div class="user-info">
+            <div>Pengguna Tamu</div>
+            <div class="user-status"><i class="fa-solid fa-circle"></i> Online</div>
         </div>
     </div>
-</header>
+    <div class="nav-title">MAIN NAVIGATION</div>
+    <ul class="sidebar-menu">
+        <li class="active"><a href="#"><i class="fa-solid fa-chart-line"></i> <span class="menu-text">Dashboard</span></a></li>
+        <li><a href="#"><i class="fa-solid fa-file-invoice"></i> <span class="menu-text">Tagihan SPB</span> <span class="badge-count" id="spbCount">0</span></a></li>
+        <li><a href="#"><i class="fa-solid fa-gas-pump"></i> <span class="menu-text">Tagihan Bunker</span> <span class="badge-count" id="bunkerCount">0</span></a></li>
+        <li><a href="#"><i class="fa-solid fa-folder-open"></i> <span class="menu-text">Laporan</span></a></li>
+        <li><a href="#"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan</span></a></li>
+    </ul>
+</aside>
 
-<div class="header-section">
-    <h1>Dashboard Monitoring Tagihan</h1>
-    <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Tenggang waktu maksimal 7 hari • Data diperbarui otomatis setiap 5 menit</div>
-</div>
+<!-- MAIN CONTENT WRAPPER -->
+<div class="wrapper">
+    <!-- TOP NAVBAR -->
+    <header class="top-navbar">
+        <button class="toggle-btn"><i class="fa-solid fa-bars"></i></button>
+        <div class="user-actions">
+            <button class="btn-login-modal" onclick="toggleModal(true)"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+        </div>
+    </header>
 
-<div class="legend">
-    <div class="legend-item"><div class="color-box" style="background-color: #ffffff;"></div><span>Aman (0-2 Hari)</span></div>
-    <div class="legend-item"><div class="color-box" style="background-color: #fff3cd;"></div><span>Peringatan (3-5 Hari)</span></div>
-    <div class="legend-item"><div class="color-box" style="background-color: #f8d7da;"></div><span>Jatuh Tempo (6-7 Hari)</span></div>
-    <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>Expire (&gt;7 Hari)</span></div>
-</div>
+    <!-- CONTENT BODY -->
+    <div class="content-body">
+        <div class="official-header">
+            <div class="official-header-inner">
+                <img class="official-logo" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg" alt="Logo Kemenhub">
+                <div class="official-title">
+                    <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
+                    <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
+                    <div class="location">KELAS III LABUAN BAJO</div>
+                </div>
+            </div>
+        </div>
 
-<div class="filter-panel">
-    <div class="filter-title">🔎 Filter &amp; Urutkan Data</div>
-    <div class="filter-controls">
-        <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
-        <select id="columnFilter">
-            <option value="all">Cari di: Semua Kolom</option>
-            <option value="date">Tanggal</option>
-            <option value="vessel">Nama Kapal</option>
-            <option value="agent">Agen / Pemilik / Pemohon</option>
-            <option value="tipe">Tipe Pengajuan</option>
-            <option value="billing">Kode Billing</option>
-            <option value="aging">Tenggang Waktu</option>
-        </select>
-        <select id="dateSort">
-            <option value="none">Urutan Tanggal: Default</option>
-            <option value="newest">Terbaru → Terlama</option>
-            <option value="oldest">Terlama → Terbaru</option>
-        </select>
-        <button type="button" id="resetFilter">Reset</button>
-    </div>
-    <div class="filter-info">
-        Filter dan pengurutan hanya berlaku pada browser pengguna yang sedang membuka halaman.
-        Data diperbarui otomatis setiap 5 menit.
-    </div>
-</div>
+        <h2 class="page-title">Dashboard Monitoring Tagihan</h2>
+        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Tenggang waktu maksimal 7 hari</div>
 
-<div class="dashboard-grid">
-    <!-- SPB DATA -->
-    <div class="column">
-        <div class="column-header">DATA TAGIHAN SPB</div>
-        <div class="table-responsive">
-            <table class="spb-table" data-section="spb">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Tanggal Berangkat</th>
-                        <th>Nama Kapal</th>
-                        <th>Agen / Pemilik</th>
-                        <th>Tipe Pengajuan</th>
-                        <th>Kode Billing</th>
-                        <th>Tenggang Waktu</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="spbTbody">
-                    <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
-                </tbody>
-            </table>
+        <!-- LEGEND -->
+        <div class="legend">
+            <div class="legend-item"><div class="color-box" style="background-color: #ffffff;"></div><span>Aman (0-2 Hari)</span></div>
+            <div class="legend-item"><div class="color-box" style="background-color: #fcf8e3;"></div><span>Peringatan (3-5 Hari)</span></div>
+            <div class="legend-item"><div class="color-box" style="background-color: #f2dede;"></div><span>Jatuh Tempo (6-7 Hari)</span></div>
+            <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>Expire (&gt;7 Hari)</span></div>
+        </div>
+
+        <!-- FILTER PANEL -->
+        <div class="filter-panel">
+            <div class="filter-title"><i class="fa-solid fa-filter"></i> Filter & Urutkan Data</div>
+            <div class="filter-controls">
+                <input type="search" id="globalFilter" placeholder="Cari kapal, pemohon, billing...">
+                <select id="columnFilter">
+                    <option value="all">Semua Kolom</option>
+                    <option value="date">Tanggal</option>
+                    <option value="vessel">Nama Kapal</option>
+                    <option value="agent">Agen / Pemohon</option>
+                    <option value="tipe">Tipe Pengajuan</option>
+                    <option value="billing">Kode Billing</option>
+                </select>
+                <select id="dateSort">
+                    <option value="none">Urutan Default</option>
+                    <option value="newest">Terbaru → Terlama</option>
+                    <option value="oldest">Terlama → Terbaru</option>
+                </select>
+                <button type="button" id="resetFilter">Reset</button>
+            </div>
+        </div>
+
+        <!-- SEPARATED TABLES -->
+        <div class="dashboard-grid">
+            <!-- TABEL 1: SPB -->
+            <div class="box-table">
+                <div class="box-header">
+                    <div class="box-title"><i class="fa-solid fa-ship"></i> DATA TAGIHAN SPB</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="spb-table" data-section="spb">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal Berangkat</th>
+                                <th>Nama Kapal</th>
+                                <th>Agen / Pemilik</th>
+                                <th>Tipe Pengajuan</th>
+                                <th>Kode Billing</th>
+                                <th>Tenggang Waktu</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spbTbody">
+                            <tr><td colspan="8" style="text-align: center; padding: 15px;">Memuat data SPB...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TABEL 2: BUNKER -->
+            <div class="box-table">
+                <div class="box-header">
+                    <div class="box-title"><i class="fa-solid fa-gas-pump"></i> DATA TAGIHAN BUNKER</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="bunker-table" data-section="bunker">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal Kegiatan</th>
+                                <th>Nama Kapal</th>
+                                <th>Pemohon / No.HP</th>
+                                <th>Tipe Pengajuan</th>
+                                <th>Kode Billing</th>
+                                <th>Tenggang Waktu</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bunkerTbody">
+                            <tr><td colspan="8" style="text-align: center; padding: 15px;">Memuat data Bunker...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- BUNKER DATA -->
-    <div class="column">
-        <div class="column-header">DATA TAGIHAN BUNKER</div>
-        <div class="table-responsive">
-            <table class="bunker-table" data-section="bunker">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Tanggal Kegiatan</th>
-                        <th>Nama Kapal</th>
-                        <th>Pemohon / No.HP</th>
-                        <th>Tipe Pengajuan</th>
-                        <th>Kode Billing</th>
-                        <th>Tenggang Waktu</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="bunkerTbody">
-                    <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
-                </tbody>
-            </table>
+<!-- SIMPLE LOGIN MODAL -->
+<div class="modal" id="loginModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-lock"></i> Login Sistem</h3>
+            <span class="close-modal" onclick="toggleModal(false)">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Username / NIP</label>
+                    <input type="text" required placeholder="Masukkan Username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" required placeholder="Masukkan Password">
+                </div>
+                <button type="submit" class="btn-login-submit">Masuk</button>
+            </form>
         </div>
     </div>
 </div>
@@ -447,10 +578,8 @@
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
 
-// GOOGLE DRIVE CONFIGURATION
 const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
 const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
-
 const autoRefreshSeconds = 300;
 
 function parseCSV(text) {
@@ -481,7 +610,6 @@ function parseCSV(text) {
 function getAgingStyle(dateString) {
     if (!dateString) return { class: 'expire-safe', text: '0 Hari' };
     const cleanDate = dateString.replace(/\//g, '-');
-    
     let timestamp = 0;
     const parts = cleanDate.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
     if (parts) {
@@ -497,13 +625,9 @@ function getAgingStyle(dateString) {
     if (daysOld < 0) daysOld = 0;
 
     let text = daysOld + " Hari";
-    if (daysOld > 7) {
-        return { class: 'expire-expired', text: text + " (Expire)" };
-    } else if (daysOld >= 6) {
-        return { class: 'expire-critical', text: text + " (Jatuh Tempo)" };
-    } else if (daysOld >= 3) {
-        return { class: 'expire-warning', text: text + " (Peringatan)" };
-    }
+    if (daysOld > 7) return { class: 'expire-expired', text: text + " (Expire)" };
+    if (daysOld >= 6) return { class: 'expire-critical', text: text + " (Jatuh Tempo)" };
+    if (daysOld >= 3) return { class: 'expire-warning', text: text + " (Peringatan)" };
     return { class: 'expire-safe', text: text + " (Aman)" };
 }
 
@@ -520,40 +644,37 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// CHECK GOOGLE DRIVE & DOWNLOAD PDF
+function toggleModal(show) {
+    document.getElementById("loginModal").style.display = show ? "flex" : "none";
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    showToast("Fitur login akan dihubungkan ke backend pada proyek berikutnya.");
+    toggleModal(false);
+}
+
 async function downloadPdf(billingCode) {
     if (!billingCode) return;
-
     showToast("Mencari berkas PDF...");
-
     if (!GDRIVE_API_KEY || GDRIVE_API_KEY.includes("YOUR_VALID_GOOGLE_DRIVE_API_KEY_HERE")) {
         showToast("⚠️ Google Drive API Key belum disetting!");
         return;
     }
-
     const query = `'${GDRIVE_FOLDER_ID}' in parents and name contains '${billingCode}' and trashed = false`;
     const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)&key=${GDRIVE_API_KEY}`;
 
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-
-        if (data.error) {
-            console.error("Drive API Error:", data.error);
-            showToast("❌ API Error: " + (data.error.message || "Gagal terhubung"));
-            return;
-        }
-
         if (data.files && data.files.length > 0) {
             const targetFile = data.files[0];
-            const directUrl = `https://drive.google.com/file/d/${targetFile.id}/view?usp=sharing`;
-            window.open(directUrl, '_blank');
+            window.open(`https://drive.google.com/file/d/${targetFile.id}/view?usp=sharing`, '_blank');
             showToast(`Membuka berkas ${targetFile.name}...`);
         } else {
             showToast(`⚠️ File PDF tidak ditemukan! (${billingCode})`);
         }
     } catch (err) {
-        console.error("Gagal terhubung ke Google Drive API:", err);
         showToast("❌ Gagal terhubung ke Google Drive API.");
     }
 }
@@ -565,30 +686,31 @@ async function loadTableData(url, tbodyId, type) {
         const text = await response.text();
         const rows = parseCSV(text);
 
-        if (rows.length > 0) rows.shift(); // remove header row
+        if (rows.length > 0) rows.shift();
 
         let html = '';
-        let count = 1;
+        let count = 0;
 
         rows.forEach(row => {
             let vesselName, dateVal, agentName, billingCode, submissionType;
 
             if (type === 'spb') {
-                vesselName     = row[1] || '';
-                dateVal        = row[5] || '';
-                agentName      = row[8] || '';
-                billingCode    = row[9] || '';
+                vesselName = row[1] || '';
+                dateVal = row[5] || '';
+                agentName = row[8] || '';
+                billingCode = row[9] || '';
                 submissionType = row[10] || '';
             } else {
-                vesselName     = row[1] || '';
-                agentName      = row[7] || '';
-                dateVal        = row[8] || '';
-                billingCode    = row[9] || '';
+                vesselName = row[1] || '';
+                agentName = row[7] || '';
+                dateVal = row[8] || '';
+                billingCode = row[9] || '';
                 submissionType = row[10] || '';
             }
 
             if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
 
+            count++;
             const aging = getAgingStyle(dateVal);
 
             html += `
@@ -599,7 +721,7 @@ async function loadTableData(url, tbodyId, type) {
                 data-agent="${escapeHtml(agentName)}"
                 data-tipe="${escapeHtml(submissionType)}"
                 data-aging="${escapeHtml(aging.text)}">
-                <td>${count++}</td>
+                <td>${count}</td>
                 <td>${escapeHtml(dateVal)}</td>
                 <td><strong>${escapeHtml(vesselName)}</strong></td>
                 <td>${escapeHtml(agentName)}</td>
@@ -608,21 +730,23 @@ async function loadTableData(url, tbodyId, type) {
                 <td>${aging.text}</td>
                 <td>
                     <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
-                        📄 Unduh PDF
+                        <i class="fa-solid fa-file-pdf"></i> Unduh
                     </button>
                 </td>
             </tr>`;
         });
 
-        if (count === 1) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+        if (type === 'spb') document.getElementById("spbCount").textContent = count;
+        if (type === 'bunker') document.getElementById("bunkerCount").textContent = count;
+
+        if (count === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 15px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
         } else {
             tbody.innerHTML = html;
             attachRowClickEvents();
         }
     } catch (err) {
-        console.error("Failed to load data:", err);
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #e74c3c; padding: 15px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
 }
 
@@ -633,7 +757,7 @@ function attachRowClickEvents() {
             if (!billingCode) return;
             navigator.clipboard.writeText(billingCode).then(() => {
                 showToast("Berhasil Menyalin: " + billingCode);
-            }).catch(err => console.error("Gagal menyalin kode: ", err));
+            });
         };
     });
 }
@@ -647,8 +771,6 @@ function parseDateVal(value) {
     if (!raw) return 0;
     let m = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
     if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1])).getTime();
-    m = raw.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/);
-    if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getTime();
     const parsed = Date.parse(raw);
     return isNaN(parsed) ? 0 : parsed;
 }
@@ -661,12 +783,9 @@ function getSearchValue(row, field) {
 }
 
 function applyFilters() {
-    const globalFilter = document.getElementById("globalFilter");
-    const columnFilter = document.getElementById("columnFilter");
-    const dateSort = document.getElementById("dateSort");
-    const search = normalize(globalFilter.value);
-    const field = columnFilter.value;
-    const sort = dateSort.value;
+    const search = normalize(document.getElementById("globalFilter").value);
+    const field = document.getElementById("columnFilter").value;
+    const sort = document.getElementById("dateSort").value;
 
     document.querySelectorAll("table[data-section]").forEach(table => {
         const tbody = table.querySelector("tbody");
