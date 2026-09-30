@@ -3,164 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMPADU - Dashboard Monitoring Tagihan</title>
-    <!-- FontAwesome & Google Fonts -->
+    <title>Monitoring Tagihan Belum Lunas (SPB & BUNKER)</title>
+    <!-- FontAwesome untuk Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --topbar-bg: #3c8dbc;
-            --topbar-dark: #367fa9;
-            --sidebar-bg: #222d32;
-            --sidebar-active: #1e282c;
-            --body-bg: #ecf0f5;
-            --card-border: #d2d6de;
-            --text-main: #333;
-            --text-muted: #777;
-            --btn-blue: #3c8dbc;
-            --btn-green: #00a65a;
+            --bg-color: #f3f6f9;
+            --card-bg: #ffffff;
+            --text-color: #263238;
+            --muted: #607d8b;
+            --border-color: #cfd8df;
+            --primary: #005baa;
+            --primary-dark: #003f7d;
+            --gold: #d4a72c;
+            --sidebar-bg: #1c2d42;
+            --sidebar-active: #005baa;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: var(--body-bg);
-            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* TOP NAVBAR */
-        .main-header {
-            background-color: var(--topbar-bg);
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #fff;
-            position: fixed;
+        /* HEADER RESMI */
+        .official-header {
+            width: 100%;
+            background: #fff;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            padding: 12px 20px;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
+            z-index: 100;
         }
 
-        .logo-brand {
-            width: 230px;
-            height: 50px;
-            background-color: var(--topbar-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .navbar-custom {
+        .official-header-inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex: 1;
-            padding: 0 15px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .sidebar-toggle {
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .navbar-user-nav {
+        .header-brand {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
         }
 
-        .user-profile-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
+        .official-logo {
+            width: 52px;
+            height: 60px;
+            object-fit: contain;
+            flex: 0 0 auto;
         }
 
-        .user-avatar-mini {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+        .official-title {
+            text-align: left;
+            line-height: 1.2;
+            color: #17324d;
+        }
+
+        .official-title .ministry {
+            font-size: .8rem;
+            font-weight: 700;
+            letter-spacing: .4px;
+        }
+
+        .official-title .office {
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .official-title .location {
+            font-size: .82rem;
+            font-weight: 700;
+            color: #555;
         }
 
         .btn-login-nav {
-            background-color: #ffffff22;
+            background-color: var(--primary);
             color: #fff;
-            border: 1px solid #ffffff55;
-            padding: 5px 12px;
-            border-radius: 3px;
-            font-size: 13px;
+            border: 0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: .85rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
         }
-        .btn-login-nav:hover { background-color: #ffffff44; }
+        .btn-login-nav:hover { background-color: var(--primary-dark); }
 
-        /* WRAPPER */
-        .wrapper {
+        /* LAYOUT FLEXIBLE (SIDEBAR + CONTENT) */
+        .app-container {
             display: flex;
-            margin-top: 50px;
             flex: 1;
         }
 
-        /* SIDEBAR NAV */
-        .main-sidebar {
-            width: 230px;
-            background-color: var(--sidebar-bg);
-            min-height: calc(100vh - 50px);
-            color: #b8c7ce;
-            flex-shrink: 0;
-        }
-
-        .user-panel {
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #1a2226;
-        }
-
-        .user-panel img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-panel .info {
-            font-size: 13px;
-            line-height: 1.3;
-        }
-
-        .user-panel .info p {
-            font-weight: 600;
+        /* SIDEBAR NAVIGATION */
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar-bg);
             color: #fff;
-            margin-bottom: 3px;
+            flex-shrink: 0;
+            padding-top: 15px;
         }
 
-        .user-panel .status-online {
-            color: #3c763d;
-            font-size: 11px;
-        }
-
-        .sidebar-menu-header {
-            padding: 10px 15px 5px;
-            font-size: 10px;
+        .sidebar-title {
+            padding: 10px 18px;
+            font-size: .75rem;
             text-transform: uppercase;
-            color: #4b646f;
-            background: #1a2226;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            color: #8fa0b5;
+            font-weight: 700;
         }
 
         .sidebar-menu {
@@ -171,217 +136,229 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 15px;
-            color: #b8c7ce;
+            padding: 12px 18px;
+            color: #d1dbe5;
             text-decoration: none;
-            font-size: 13.5px;
-            border-left: 3px solid transparent;
+            font-size: .9rem;
+            font-weight: 500;
+            border-left: 4px solid transparent;
             transition: all 0.2s;
         }
 
         .sidebar-menu li a:hover,
         .sidebar-menu li.active a {
-            color: #fff;
             background: var(--sidebar-active);
-            border-left-color: var(--topbar-bg);
+            color: #fff;
+            border-left-color: var(--gold);
         }
 
-        .sidebar-menu li a .menu-label {
+        .sidebar-menu li a .menu-text {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .badge-count {
-            background-color: var(--topbar-bg);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 7px;
             border-radius: 10px;
-            font-weight: bold;
+            font-size: .75rem;
+            font-weight: 700;
         }
 
         /* MAIN CONTENT AREA */
-        .content-wrapper {
+        .main-content {
             flex: 1;
-            padding: 15px 20px;
-            overflow-x: hidden;
+            padding: 20px;
+            max-width: 1200px;
         }
 
-        .content-header {
+        .header-section {
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            margin: 0 0 4px;
+            color: #263b50;
+            font-size: 1.5rem;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: .85rem;
+        }
+
+        /* LEGEND STATUS */
+        .legend {
             display: flex;
-            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            background: var(--card-bg);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .legend-item {
+            display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            gap: 6px;
+            font-size: .78rem;
         }
 
-        .content-header h1 {
-            font-size: 22px;
-            font-weight: 400;
-        }
-
-        .breadcrumb {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .breadcrumb a {
-            color: var(--topbar-bg);
-            text-decoration: none;
-        }
-
-        /* WELCOME BOX */
-        .box-welcome {
-            background: #fff;
-            border-top: 3px solid var(--topbar-bg);
-            padding: 15px;
+        .color-box {
+            width: 14px;
+            height: 14px;
             border-radius: 3px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-            font-size: 14px;
+            border: 1px solid rgba(0,0,0,.15);
         }
 
-        /* FILTER BOX */
-        .box-filter {
+        /* FILTER PANEL */
+        .filter-panel {
             background: #fff;
-            border-radius: 3px;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 4px rgba(0,0,0,.03);
         }
 
         .filter-controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
+            display: grid;
+            grid-template-columns: minmax(180px, 1.5fr) minmax(140px, 1fr) minmax(140px, 1fr) auto;
+            gap: 8px;
         }
 
         .filter-controls input,
         .filter-controls select,
         .filter-controls button {
-            height: 34px;
-            padding: 0 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 13px;
+            height: 38px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font: inherit;
+            font-size: .82rem;
         }
-
-        .filter-controls input { flex: 1; min-width: 200px; }
 
         .filter-controls button {
-            background-color: var(--topbar-bg);
+            background: var(--primary);
             color: #fff;
-            border: none;
+            border: 0;
             cursor: pointer;
-            padding: 0 15px;
-            font-weight: 600;
-        }
-        .filter-controls button:hover { background-color: var(--topbar-dark); }
-
-        /* DATA BOX / TABLES */
-        .box-data {
-            background: #fff;
-            border-top: 3px solid #d2d6de;
-            border-radius: 3px;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            font-weight: 700;
+            padding: 0 16px;
         }
 
-        .box-header {
-            padding: 10px 15px;
-            border-bottom: 1px solid #f4f4f4;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .filter-controls button:hover { background: var(--primary-dark); }
+
+        /* FIRM TABLE STYLING */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid #b0bec5;
+            box-shadow: 0 2px 6px rgba(0,0,0,.05);
+            overflow: hidden;
         }
 
-        .box-title {
-            font-size: 16px;
-            font-weight: 600;
+        .table-card-header {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #fff;
+            font-weight: 700;
+            font-size: .95rem;
+            letter-spacing: .25px;
         }
 
         .table-responsive {
-            width: 100%;
             overflow-x: auto;
+            max-height: 68vh;
+            overflow-y: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            text-align: left;
         }
 
         th, td {
             padding: 10px 12px;
-            border: 1px solid #f4f4f4;
-            text-align: left;
+            border: 1px solid #cfd8df; /* FIRM BORDER */
+            font-size: .84rem;
             vertical-align: middle;
         }
 
         th {
-            background-color: #f9f9f9;
-            font-weight: 600;
+            background: #eef2f5;
+            color: #17324d;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            border-bottom: 2px solid #b0bec5;
         }
 
-        /* STATUS AGING COLOR */
+        /* STATUS COLORS */
         .expire-safe { background-color: #ffffff; }
         .expire-warning { background-color: #fff3cd; color: #856404; }
         .expire-critical { background-color: #f8d7da; color: #721c24; font-weight: 600; }
         .expire-expired { background-color: #e2e3e5; color: #343a40; font-weight: 700; }
 
         tr.clickable-row { cursor: pointer; }
-        tr.clickable-row:hover { filter: brightness(0.97); }
+        tr.clickable-row:hover { filter: brightness(.96); }
 
         code {
             font-family: Consolas, monospace;
             background: #eef2f5;
-            padding: 2px 5px;
-            border-radius: 3px;
-            color: #d9534f;
+            padding: 3px 6px;
+            border: 1px solid #bccacd;
+            border-radius: 4px;
+            font-size: .84em;
+            color: #003f7d;
             font-weight: bold;
         }
 
         .btn-download {
-            background-color: var(--btn-green);
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 12px;
+            background-color: #27ae60;
+            color: #ffffff;
+            border: 0;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: .78rem;
+            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
-        .btn-download:hover { background-color: #008d4c; }
+        .btn-download:hover { background-color: #219653; }
 
-        .view-section { display: none; }
-        .view-section.active { display: block; }
+        .tab-section { display: none; }
+        .tab-section.active { display: block; }
+        .hidden-row { display: none !important; }
 
-        /* TOAST */
+        /* TOAST NOTIFICATION */
         #toast {
             visibility: hidden;
-            width: min(90vw, 400px);
-            background-color: #222d32;
+            width: min(92vw, 400px);
+            background-color: #263b50;
             color: #fff;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 6px;
             padding: 12px;
             position: fixed;
-            z-index: 2000;
+            z-index: 1000;
             left: 50%;
-            bottom: 30px;
+            bottom: 20px;
             transform: translateX(-50%);
-            font-size: 13px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: .88rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.3);
         }
+        #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.7s; }
 
-        #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.7s; }
-
-        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
-        @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 20px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 20px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
         /* LOGIN MODAL */
         .modal-overlay {
@@ -391,180 +368,143 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 3000;
+            z-index: 2000;
             visibility: hidden;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
-        .modal-overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
 
-        .login-box {
+        .login-card {
             background: #fff;
-            width: 360px;
-            border-radius: 3px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 350px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
             overflow: hidden;
         }
 
-        .login-logo {
-            background-color: var(--topbar-bg);
-            padding: 20px;
-            text-align: center;
+        .login-card-header {
+            background: var(--primary);
             color: #fff;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .login-box-body {
-            padding: 20px;
-        }
-
-        .login-box-msg {
+            padding: 16px;
             text-align: center;
-            margin-bottom: 15px;
-            color: #666;
-            font-size: 13px;
+            font-size: 1.1rem;
+            font-weight: 700;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-            position: relative;
-        }
+        .login-card-body { padding: 20px; }
 
+        .form-group { margin-bottom: 14px; }
+        .form-group label { font-size: .8rem; font-weight: 600; margin-bottom: 4px; display: block; }
         .form-group input {
             width: 100%;
             height: 38px;
-            padding: 0 35px 0 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 13px;
-        }
-
-        .form-group i {
-            position: absolute;
-            right: 10px;
-            top: 12px;
-            color: #999;
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: .85rem;
         }
 
         .btn-login-submit {
             width: 100%;
             height: 38px;
-            background-color: var(--topbar-bg);
+            background: var(--primary);
             color: #fff;
-            border: none;
-            border-radius: 3px;
+            border: 0;
+            border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 14px;
+            margin-top: 6px;
         }
-        .btn-login-submit:hover { background-color: var(--topbar-dark); }
 
-        .btn-close-modal {
-            margin-top: 10px;
+        .btn-cancel {
             width: 100%;
-            background: none;
-            border: none;
+            background: transparent;
+            border: 0;
             color: #777;
-            font-size: 12px;
+            padding: 8px;
             cursor: pointer;
+            font-size: .8rem;
+            margin-top: 4px;
         }
 
         @media (max-width: 768px) {
-            .wrapper { flex-direction: column; }
-            .main-sidebar { width: 100%; min-height: auto; }
-            .logo-brand { width: 100%; }
+            .app-container { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .filter-controls { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<!-- TOP NAVBAR -->
-<header class="main-header">
-    <a href="#" class="logo-brand">
-        <b>SIMPADU</b>
-    </a>
-    <div class="navbar-custom">
-        <div class="sidebar-toggle">
-            <i class="fas fa-bars"></i>
-        </div>
-        <div class="navbar-user-nav">
-            <div class="user-profile-header">
-                <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg" class="user-avatar-mini" alt="User">
-                <span>KSOP III Labuan Bajo</span>
+<!-- HEADER RESMI -->
+<header class="official-header">
+    <div class="official-header-inner">
+        <div class="header-brand">
+            <img
+                class="official-logo"
+                src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg"
+                alt="Logo Kemenhub"
+            >
+            <div class="official-title">
+                <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
+                <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
+                <div class="location">KELAS III LABUAN BAJO</div>
             </div>
-            <button class="btn-login-nav" onclick="openLoginModal()">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>
         </div>
+        <button class="btn-login-nav" onclick="openLoginModal()">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
     </div>
 </header>
 
-<!-- MAIN WRAPPER -->
-<div class="wrapper">
+<div class="app-container">
 
-    <!-- LEFT SIDEBAR -->
-    <aside class="main-sidebar">
-        <div class="user-panel">
-            <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg" alt="User Image">
-            <div class="info">
-                <p>Operator UPT</p>
-                <span class="status-online"><i class="fas fa-circle"></i> Online</span>
-            </div>
-        </div>
-
-        <div class="sidebar-menu-header">MAIN NAVIGATION</div>
-
+    <!-- NAVIGATION SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-title">NAVIGASI UTAMA</div>
         <ul class="sidebar-menu">
             <li class="active" id="nav-spb">
                 <a href="javascript:void(0)" onclick="switchTab('spb')">
-                    <span class="menu-label">
-                        <i class="fas fa-ship"></i> Tagihan SPB
-                    </span>
-                    <span class="badge-count" id="badge-spb">0</span>
+                    <span class="menu-text"><i class="fas fa-ship"></i> Tagihan SPB</span>
+                    <span class="badge" id="badge-spb">0</span>
                 </a>
             </li>
             <li id="nav-bunker">
                 <a href="javascript:void(0)" onclick="switchTab('bunker')">
-                    <span class="menu-label">
-                        <i class="fas fa-gas-pump"></i> Tagihan Bunker
-                    </span>
-                    <span class="badge-count" id="badge-bunker">0</span>
+                    <span class="menu-text"><i class="fas fa-gas-pump"></i> Tagihan Bunker</span>
+                    <span class="badge" id="badge-bunker">0</span>
                 </a>
             </li>
         </ul>
     </aside>
 
-    <!-- CONTENT WRAPPER -->
-    <main class="content-wrapper">
-        <div class="content-header">
-            <h1 id="page-title">Dashboard Tagihan SPB</h1>
-            <div class="breadcrumb">
-                <a href="#"><i class="fas fa-home"></i> Home</a> > <span id="breadcrumb-active">Tagihan SPB</span>
-            </div>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="header-section">
+            <h1 id="tab-title">Dashboard Monitoring Tagihan SPB</h1>
+            <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Tenggang waktu maksimal 7 hari • Data diperbarui otomatis setiap 5 menit</div>
         </div>
 
-        <div class="box-welcome">
-            <strong>SELAMAT DATANG DI SISTEM MONITORING TAGIHAN - KEMENTERIAN PERHUBUNGAN</strong><br>
-            <small style="color: var(--text-muted);">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis secara real-time</small>
+        <div class="legend">
+            <div class="legend-item"><div class="color-box" style="background-color: #ffffff;"></div><span>Aman (0-2 Hari)</span></div>
+            <div class="legend-item"><div class="color-box" style="background-color: #fff3cd;"></div><span>Peringatan (3-5 Hari)</span></div>
+            <div class="legend-item"><div class="color-box" style="background-color: #f8d7da;"></div><span>Jatuh Tempo (6-7 Hari)</span></div>
+            <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>Expire (&gt;7 Hari)</span></div>
         </div>
 
-        <!-- FILTER CONTROL -->
-        <div class="box-filter">
+        <div class="filter-panel">
             <div class="filter-controls">
-                <input type="search" id="globalFilter" placeholder="Cari nama kapal, pemohon, kode billing...">
+                <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
                 <select id="columnFilter">
-                    <option value="all">Semua Kolom</option>
+                    <option value="all">Cari di: Semua Kolom</option>
                     <option value="date">Tanggal</option>
                     <option value="vessel">Nama Kapal</option>
-                    <option value="agent">Agen / Pemilik</option>
+                    <option value="agent">Agen / Pemilik / Pemohon</option>
                     <option value="billing">Kode Billing</option>
                 </select>
                 <select id="dateSort">
-                    <option value="none">Urutan Default</option>
+                    <option value="none">Urutan Tanggal: Default</option>
                     <option value="newest">Terbaru → Terlama</option>
                     <option value="oldest">Terlama → Terbaru</option>
                 </select>
@@ -572,14 +512,12 @@
             </div>
         </div>
 
-        <!-- TABEL DATA SPB SECTION -->
-        <section id="section-spb" class="view-section active">
-            <div class="box-data">
-                <div class="box-header">
-                    <div class="box-title"><i class="fas fa-list"></i> Data Tagihan SPB (Surat Persetujuan Berlayar)</div>
-                </div>
+        <!-- TABEL SPB -->
+        <section id="section-spb" class="tab-section active">
+            <div class="table-card">
+                <div class="table-card-header"><i class="fas fa-table"></i> DATA TAGIHAN SPB</div>
                 <div class="table-responsive">
-                    <table class="spb-table" data-section="spb">
+                    <table data-section="spb">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -600,14 +538,12 @@
             </div>
         </section>
 
-        <!-- TABEL DATA BUNKER SECTION -->
-        <section id="section-bunker" class="view-section">
-            <div class="box-data">
-                <div class="box-header">
-                    <div class="box-title"><i class="fas fa-list"></i> Data Tagihan Bunker</div>
-                </div>
+        <!-- TABEL BUNKER -->
+        <section id="section-bunker" class="tab-section">
+            <div class="table-card">
+                <div class="table-card-header"><i class="fas fa-table"></i> DATA TAGIHAN BUNKER</div>
                 <div class="table-responsive">
-                    <table class="bunker-table" data-section="bunker">
+                    <table data-section="bunker">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -630,29 +566,26 @@
     </main>
 </div>
 
-<!-- TOAST NOTIFICATION -->
+<!-- TOAST -->
 <div id="toast">Kode Billing disalin!</div>
 
-<!-- LOGIN MODAL -->
+<!-- LOGIN POPUP MODAL -->
 <div class="modal-overlay" id="loginModal">
-    <div class="login-box">
-        <div class="login-logo">
-            SIMPADU <b>LOGIN</b>
-        </div>
-        <div class="login-box-body">
-            <p class="login-box-msg">Masuk untuk mengelola data</p>
-            <form id="loginForm" onsubmit="handleLogin(event)">
+    <div class="login-card">
+        <div class="login-card-header">LOGIN SISTEM</div>
+        <div class="login-card-body">
+            <form onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <input type="text" id="loginUsername" placeholder="Username" required>
-                    <i class="fas fa-user"></i>
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" required placeholder="Masukkan username">
                 </div>
                 <div class="form-group">
-                    <input type="password" id="loginPassword" placeholder="Password" required>
-                    <i class="fas fa-lock"></i>
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Masukkan password">
                 </div>
                 <button type="submit" class="btn-login-submit">Sign In</button>
+                <button type="button" class="btn-cancel" onclick="closeLoginModal()">Batal</button>
             </form>
-            <button type="button" class="btn-close-modal" onclick="closeLoginModal()">Batal</button>
         </div>
     </div>
 </div>
@@ -661,39 +594,29 @@
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
 
-// GOOGLE DRIVE CONFIG
 const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
 const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
 
-// NAVIGATION SWITCH TAB
 function switchTab(type) {
-    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.sidebar-menu li').forEach(el => el.classList.remove('active'));
 
     if (type === 'spb') {
         document.getElementById('section-spb').classList.add('active');
         document.getElementById('nav-spb').classList.add('active');
-        document.getElementById('page-title').innerText = "Dashboard Tagihan SPB";
-        document.getElementById('breadcrumb-active').innerText = "Tagihan SPB";
+        document.getElementById('tab-title').innerText = "Dashboard Monitoring Tagihan SPB";
     } else {
         document.getElementById('section-bunker').classList.add('active');
         document.getElementById('nav-bunker').classList.add('active');
-        document.getElementById('page-title').innerText = "Dashboard Tagihan Bunker";
-        document.getElementById('breadcrumb-active').innerText = "Tagihan Bunker";
+        document.getElementById('tab-title').innerText = "Dashboard Monitoring Tagihan Bunker";
     }
 }
 
-// LOGIN MODAL CONTROLS
-function openLoginModal() {
-    document.getElementById('loginModal').classList.add('active');
-}
-function closeLoginModal() {
-    document.getElementById('loginModal').classList.remove('active');
-}
+function openLoginModal() { document.getElementById('loginModal').classList.add('active'); }
+function closeLoginModal() { document.getElementById('loginModal').classList.remove('active'); }
 function handleLogin(e) {
     e.preventDefault();
-    const user = document.getElementById('loginUsername').value;
-    showToast(`Selamat datang, ${user}!`);
+    showToast("Login Berhasil!");
     closeLoginModal();
 }
 
@@ -759,7 +682,6 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// DRIVE AUTO DOWNLOAD
 async function downloadPdf(billingCode) {
     if (!billingCode) return;
     showToast("Mencari berkas PDF...");
@@ -837,7 +759,7 @@ async function loadTableData(url, tbodyId, type) {
                 <td>${aging.text}</td>
                 <td>
                     <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
-                        <i class="fas fa-file-pdf"></i> PDF
+                        📄 Unduh PDF
                     </button>
                 </td>
             </tr>`;
