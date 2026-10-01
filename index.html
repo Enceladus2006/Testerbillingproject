@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.7">
-    <title>Monitoring Tagihan Belum Lunas (SPB & BUNKER)</title>
+    <title>Monitoring Tagihan Belum Lunas (BUNKER & SPB)</title>
     <style>
         :root {
             --bg-color: #f3f6f9;
@@ -42,18 +42,32 @@
         }
 
         .sidebar-header {
-            padding: 20px 16px;
+            padding: 16px;
             background: rgba(0,0,0,0.15);
             border-bottom: 3px solid var(--gold);
-            text-align: center;
         }
 
-        .sidebar-header h2 {
-            margin: 0;
-            font-size: 1.05rem;
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: var(--gold);
+            color: #17324d;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             text-transform: uppercase;
             letter-spacing: .5px;
-            color: #fff;
+        }
+
+        .btn-login:hover {
+            background: #c29622;
         }
 
         .sidebar-menu {
@@ -85,32 +99,6 @@
             background: var(--primary);
             color: #fff;
             border-left-color: var(--gold);
-        }
-
-        .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 10px;
-            background: var(--gold);
-            color: #17324d;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: .88rem;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-login:hover {
-            background: #c29622;
         }
 
         /* --- MAIN CONTENT AREA --- */
@@ -245,7 +233,6 @@
             letter-spacing: .25px;
         }
 
-        /* Full list view (inner vertical scrolling disabled) */
         .table-responsive {
             background: var(--card-bg);
             border-radius: 0 0 9px 9px;
@@ -494,6 +481,9 @@
             .sidebar {
                 width: 100%;
             }
+            .sidebar-header {
+                padding: 10px 16px;
+            }
             .sidebar-menu {
                 display: flex;
                 padding: 0;
@@ -513,9 +503,6 @@
             .sidebar-menu li button.active {
                 border-left-color: transparent;
                 border-bottom-color: var(--gold);
-            }
-            .sidebar-footer {
-                padding: 8px 16px;
             }
         }
 
@@ -567,15 +554,12 @@
 <!-- LEFT NAVIGATION SIDEBAR -->
 <nav class="sidebar">
     <div class="sidebar-header">
-        <h2>NAVIGASI</h2>
+        <button type="button" class="btn-login" id="openLoginModal">🔑 Log In Admin</button>
     </div>
     <ul class="sidebar-menu">
-        <li><button type="button" class="nav-btn active" data-target="spb">⚓ Tagihan SPB</button></li>
-        <li><button type="button" class="nav-btn" data-target="bunker">🛢️ Tagihan Bunker</button></li>
+        <li><button type="button" class="nav-btn active" data-target="bunker">🛢️ Tagihan Bunker</button></li>
+        <li><button type="button" class="nav-btn" data-target="spb">⚓ Tagihan SPB</button></li>
     </ul>
-    <div class="sidebar-footer">
-        <button type="button" class="btn-login" id="openLoginModal">🔑 Login Admin</button>
-    </div>
 </nav>
 
 <!-- MAIN CONTENT CONTAINER -->
@@ -635,32 +619,8 @@
     </div>
 
     <div class="dashboard-grid">
-        <!-- SPB DATA -->
-        <div class="column" id="col-spb">
-            <div class="column-header">DATA TAGIHAN SPB</div>
-            <div class="table-responsive">
-                <table class="spb-table" data-section="spb">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Tanggal Berangkat</th>
-                            <th>Nama Kapal</th>
-                            <th>Agen / Pemilik</th>
-                            <th>Tipe Pengajuan</th>
-                            <th>Kode Billing</th>
-                            <th>Tenggang Waktu</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="spbTbody">
-                        <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <!-- BUNKER DATA -->
-        <div class="column tab-hidden" id="col-bunker">
+        <div class="column" id="col-bunker">
             <div class="column-header">DATA TAGIHAN BUNKER</div>
             <div class="table-responsive">
                 <table class="bunker-table" data-section="bunker">
@@ -678,6 +638,30 @@
                     </thead>
                     <tbody id="bunkerTbody">
                         <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SPB DATA -->
+        <div class="column tab-hidden" id="col-spb">
+            <div class="column-header">DATA TAGIHAN SPB</div>
+            <div class="table-responsive">
+                <table class="spb-table" data-section="spb">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Berangkat</th>
+                            <th>Nama Kapal</th>
+                            <th>Agen / Pemilik</th>
+                            <th>Tipe Pengajuan</th>
+                            <th>Kode Billing</th>
+                            <th>Tenggang Waktu</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spbTbody">
+                        <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -793,7 +777,7 @@ async function downloadPdf(billingCode) {
     showToast("Mencari berkas PDF...");
 
     if (!GDRIVE_API_KEY || GDRIVE_API_KEY.includes("YOUR_VALID_GOOGLE_DRIVE_API_KEY_HERE")) {
-        showToast("⚠️ Google Drive API Key belum disetting!");
+        showToast("⚠️️ Google Drive API Key belum disetting!");
         return;
     }
 
@@ -955,7 +939,6 @@ function applyFilters() {
     });
 }
 
-/* SIDEBAR TOGGLE FUNCTIONALITY (SPB & BUNKER ONLY) */
 function setupSidebarNavigation() {
     const navButtons = document.querySelectorAll(".nav-btn");
     const colSpb = document.getElementById("col-spb");
@@ -967,18 +950,17 @@ function setupSidebarNavigation() {
             btn.classList.add("active");
 
             const target = btn.getAttribute("data-target");
-            if (target === "spb") {
+            if (target === "bunker") {
+                colBunker.classList.remove("tab-hidden");
+                colSpb.classList.add("tab-hidden");
+            } else if (target === "spb") {
                 colSpb.classList.remove("tab-hidden");
                 colBunker.classList.add("tab-hidden");
-            } else if (target === "bunker") {
-                colSpb.classList.add("tab-hidden");
-                colBunker.classList.remove("tab-hidden");
             }
         });
     });
 }
 
-/* LOGIN MODAL HANDLERS */
 function setupLoginModal() {
     const modal = document.getElementById("loginModal");
     const openBtn = document.getElementById("openLoginModal");
