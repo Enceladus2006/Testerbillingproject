@@ -29,7 +29,7 @@
             min-height: 100vh;
         }
 
-        /* --- SIDEBAR NAVIGATION --- */
+        /* --- LEFT NAVIGATION SIDEBAR --- */
         .sidebar {
             width: var(--sidebar-width);
             background: var(--primary-dark);
@@ -230,7 +230,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Hides columns dynamically based on sidebar navigation */
         .column.tab-hidden {
             display: none !important;
         }
@@ -246,6 +245,7 @@
             letter-spacing: .25px;
         }
 
+        /* Full list view (inner vertical scrolling disabled) */
         .table-responsive {
             background: var(--card-bg);
             border-radius: 0 0 9px 9px;
@@ -253,8 +253,8 @@
             overflow-x: auto;
             border: 1px solid var(--border-color);
             border-top: 0;
-            max-height: 70vh;
-            overflow-y: auto;
+            max-height: none;
+            overflow-y: visible;
         }
 
         table {
@@ -570,8 +570,7 @@
         <h2>NAVIGASI</h2>
     </div>
     <ul class="sidebar-menu">
-        <li><button type="button" class="nav-btn active" data-target="all">📊 Semua Data</button></li>
-        <li><button type="button" class="nav-btn" data-target="spb">⚓ Tagihan SPB</button></li>
+        <li><button type="button" class="nav-btn active" data-target="spb">⚓ Tagihan SPB</button></li>
         <li><button type="button" class="nav-btn" data-target="bunker">🛢️ Tagihan Bunker</button></li>
     </ul>
     <div class="sidebar-footer">
@@ -661,7 +660,7 @@
         </div>
 
         <!-- BUNKER DATA -->
-        <div class="column" id="col-bunker">
+        <div class="column tab-hidden" id="col-bunker">
             <div class="column-header">DATA TAGIHAN BUNKER</div>
             <div class="table-responsive">
                 <table class="bunker-table" data-section="bunker">
@@ -956,7 +955,7 @@ function applyFilters() {
     });
 }
 
-/* SIDEBAR TOGGLE FUNCTIONALITY */
+/* SIDEBAR TOGGLE FUNCTIONALITY (SPB & BUNKER ONLY) */
 function setupSidebarNavigation() {
     const navButtons = document.querySelectorAll(".nav-btn");
     const colSpb = document.getElementById("col-spb");
@@ -968,10 +967,7 @@ function setupSidebarNavigation() {
             btn.classList.add("active");
 
             const target = btn.getAttribute("data-target");
-            if (target === "all") {
-                colSpb.classList.remove("tab-hidden");
-                colBunker.classList.remove("tab-hidden");
-            } else if (target === "spb") {
+            if (target === "spb") {
                 colSpb.classList.remove("tab-hidden");
                 colBunker.classList.add("tab-hidden");
             } else if (target === "bunker") {
