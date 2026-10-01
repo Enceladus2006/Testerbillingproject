@@ -14,6 +14,7 @@
             --primary: #005baa;
             --primary-dark: #003f7d;
             --gold: #d4a72c;
+            --sidebar-width: 250px;
         }
 
         * { box-sizing: border-box; }
@@ -23,7 +24,100 @@
             background: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 0 12px 24px;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR NAVIGATION --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary-dark);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 8px rgba(0,0,0,.15);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px 16px;
+            background: rgba(0,0,0,0.15);
+            border-bottom: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: #fff;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px 0;
+            margin: 0;
+            flex: 1;
+        }
+
+        .sidebar-menu li button {
+            width: 100%;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #d1e3f3;
+            text-align: left;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu li button:hover,
+        .sidebar-menu li button.active {
+            background: var(--primary);
+            color: #fff;
+            border-left-color: var(--gold);
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            background: var(--gold);
+            color: #17324d;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: .88rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-login:hover {
+            background: #c29622;
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-wrapper {
+            flex: 1;
+            padding: 0 16px 24px;
+            overflow-x: hidden;
         }
 
         .official-header {
@@ -133,6 +227,12 @@
         .column {
             width: 100%;
             min-width: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Hides columns dynamically based on sidebar navigation */
+        .column.tab-hidden {
+            display: none !important;
         }
 
         .column-header {
@@ -273,7 +373,7 @@
             border-radius: 8px;
             padding: 12px 16px;
             position: fixed;
-            z-index: 10;
+            z-index: 1000;
             left: 50%;
             bottom: 20px;
             transform: translateX(-50%);
@@ -293,8 +393,134 @@
             to { bottom: 0; opacity: 0; }
         }
 
+        /* --- LOGIN MODAL POPUP --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 380px;
+            padding: 24px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+            animation: modalSlide 0.25s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .82rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: .88rem;
+        }
+
+        .btn-submit-login {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .btn-submit-login:hover {
+            background: var(--primary-dark);
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .sidebar-menu {
+                display: flex;
+                padding: 0;
+                overflow-x: auto;
+            }
+            .sidebar-menu li {
+                flex: 1;
+            }
+            .sidebar-menu li button {
+                padding: 10px;
+                justify-content: center;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                white-space: nowrap;
+            }
+            .sidebar-menu li button:hover,
+            .sidebar-menu li button.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--gold);
+            }
+            .sidebar-footer {
+                padding: 8px 16px;
+            }
+        }
+
         @media (max-width: 700px) {
-            body { padding: 0 8px 20px; }
+            .main-wrapper { padding: 0 8px 20px; }
             .official-header { margin-bottom: 14px; padding: 12px 8px 10px; }
             .official-header-inner { gap: 9px; }
             .official-logo { width: 48px; height: 58px; }
@@ -338,106 +564,147 @@
 </head>
 <body>
 
-<header class="official-header">
-    <div class="official-header-inner">
-        <img
-            class="official-logo"
-            src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg"
-            alt="Logo Kementerian Perhubungan"
-        >
-        <div class="official-title">
-            <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
-            <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
-            <div class="location">KELAS III LABUAN BAJO</div>
+<!-- LEFT NAVIGATION SIDEBAR -->
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <h2>NAVIGASI</h2>
+    </div>
+    <ul class="sidebar-menu">
+        <li><button type="button" class="nav-btn active" data-target="all">📊 Semua Data</button></li>
+        <li><button type="button" class="nav-btn" data-target="spb">⚓ Tagihan SPB</button></li>
+        <li><button type="button" class="nav-btn" data-target="bunker">🛢️ Tagihan Bunker</button></li>
+    </ul>
+    <div class="sidebar-footer">
+        <button type="button" class="btn-login" id="openLoginModal">🔑 Login Admin</button>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT CONTAINER -->
+<div class="main-wrapper">
+
+    <header class="official-header">
+        <div class="official-header-inner">
+            <img
+                class="official-logo"
+                src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg"
+                alt="Logo Kementerian Perhubungan"
+            >
+            <div class="official-title">
+                <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
+                <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
+                <div class="location">KELAS III LABUAN BAJO</div>
+            </div>
         </div>
+    </header>
+
+    <div class="header-section">
+        <h1>Dashboard Monitoring Tagihan</h1>
+        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Tenggang waktu maksimal 7 hari • Data diperbarui otomatis setiap 5 menit</div>
     </div>
-</header>
 
-<div class="header-section">
-    <h1>Dashboard Monitoring Tagihan</h1>
-    <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Tenggang waktu maksimal 7 hari • Data diperbarui otomatis setiap 5 menit</div>
-</div>
-
-<div class="legend">
-    <div class="legend-item"><div class="color-box" style="background-color: #ffffff;"></div><span>Aman (0-2 Hari)</span></div>
-    <div class="legend-item"><div class="color-box" style="background-color: #fff3cd;"></div><span>Peringatan (3-5 Hari)</span></div>
-    <div class="legend-item"><div class="color-box" style="background-color: #f8d7da;"></div><span>Jatuh Tempo (6-7 Hari)</span></div>
-    <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>Expire (&gt;7 Hari)</span></div>
-</div>
-
-<div class="filter-panel">
-    <div class="filter-title">🔎 Filter &amp; Urutkan Data</div>
-    <div class="filter-controls">
-        <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
-        <select id="columnFilter">
-            <option value="all">Cari di: Semua Kolom</option>
-            <option value="date">Tanggal</option>
-            <option value="vessel">Nama Kapal</option>
-            <option value="agent">Agen / Pemilik / Pemohon</option>
-            <option value="tipe">Tipe Pengajuan</option>
-            <option value="billing">Kode Billing</option>
-            <option value="aging">Tenggang Waktu</option>
-        </select>
-        <select id="dateSort">
-            <option value="none">Urutan Tanggal: Default</option>
-            <option value="newest">Terbaru → Terlama</option>
-            <option value="oldest">Terlama → Terbaru</option>
-        </select>
-        <button type="button" id="resetFilter">Reset</button>
+    <div class="legend">
+        <div class="legend-item"><div class="color-box" style="background-color: #ffffff;"></div><span>Aman (0-2 Hari)</span></div>
+        <div class="legend-item"><div class="color-box" style="background-color: #fff3cd;"></div><span>Peringatan (3-5 Hari)</span></div>
+        <div class="legend-item"><div class="color-box" style="background-color: #f8d7da;"></div><span>Jatuh Tempo (6-7 Hari)</span></div>
+        <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>Expire (&gt;7 Hari)</span></div>
     </div>
-    <div class="filter-info">
-        Filter dan pengurutan hanya berlaku pada browser pengguna yang sedang membuka halaman.
-        Data diperbarui otomatis setiap 5 menit.
-    </div>
-</div>
 
-<div class="dashboard-grid">
-    <!-- SPB DATA -->
-    <div class="column">
-        <div class="column-header">DATA TAGIHAN SPB</div>
-        <div class="table-responsive">
-            <table class="spb-table" data-section="spb">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Tanggal Berangkat</th>
-                        <th>Nama Kapal</th>
-                        <th>Agen / Pemilik</th>
-                        <th>Tipe Pengajuan</th>
-                        <th>Kode Billing</th>
-                        <th>Tenggang Waktu</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="spbTbody">
-                    <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
-                </tbody>
-            </table>
+    <div class="filter-panel">
+        <div class="filter-title">🔎 Filter &amp; Urutkan Data</div>
+        <div class="filter-controls">
+            <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
+            <select id="columnFilter">
+                <option value="all">Cari di: Semua Kolom</option>
+                <option value="date">Tanggal</option>
+                <option value="vessel">Nama Kapal</option>
+                <option value="agent">Agen / Pemilik / Pemohon</option>
+                <option value="tipe">Tipe Pengajuan</option>
+                <option value="billing">Kode Billing</option>
+                <option value="aging">Tenggang Waktu</option>
+            </select>
+            <select id="dateSort">
+                <option value="none">Urutan Tanggal: Default</option>
+                <option value="newest">Terbaru → Terlama</option>
+                <option value="oldest">Terlama → Terbaru</option>
+            </select>
+            <button type="button" id="resetFilter">Reset</button>
+        </div>
+        <div class="filter-info">
+            Filter dan pengurutan hanya berlaku pada browser pengguna yang sedang membuka halaman.
+            Data diperbarui otomatis setiap 5 menit.
         </div>
     </div>
 
-    <!-- BUNKER DATA -->
-    <div class="column">
-        <div class="column-header">DATA TAGIHAN BUNKER</div>
-        <div class="table-responsive">
-            <table class="bunker-table" data-section="bunker">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Tanggal Kegiatan</th>
-                        <th>Nama Kapal</th>
-                        <th>Pemohon / No.HP</th>
-                        <th>Tipe Pengajuan</th>
-                        <th>Kode Billing</th>
-                        <th>Tenggang Waktu</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="bunkerTbody">
-                    <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
-                </tbody>
-            </table>
+    <div class="dashboard-grid">
+        <!-- SPB DATA -->
+        <div class="column" id="col-spb">
+            <div class="column-header">DATA TAGIHAN SPB</div>
+            <div class="table-responsive">
+                <table class="spb-table" data-section="spb">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Berangkat</th>
+                            <th>Nama Kapal</th>
+                            <th>Agen / Pemilik</th>
+                            <th>Tipe Pengajuan</th>
+                            <th>Kode Billing</th>
+                            <th>Tenggang Waktu</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spbTbody">
+                        <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
+        <!-- BUNKER DATA -->
+        <div class="column" id="col-bunker">
+            <div class="column-header">DATA TAGIHAN BUNKER</div>
+            <div class="table-responsive">
+                <table class="bunker-table" data-section="bunker">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Kegiatan</th>
+                            <th>Nama Kapal</th>
+                            <th>Pemohon / No.HP</th>
+                            <th>Tipe Pengajuan</th>
+                            <th>Kode Billing</th>
+                            <th>Tenggang Waktu</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bunkerTbody">
+                        <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- LOGIN MODAL POPUP -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Login Sistem</h3>
+            <button class="close-modal" id="closeLoginModal">&times;</button>
+        </div>
+        <form id="loginForm" onsubmit="event.preventDefault(); handleLoginSubmit();">
+            <div class="form-group">
+                <label for="loginId">User ID / Username</label>
+                <input type="text" id="loginId" placeholder="Masukkan ID" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPass">Password</label>
+                <input type="password" id="loginPass" placeholder="Masukkan Password" required>
+            </div>
+            <button type="submit" class="btn-submit-login">Masuk</button>
+        </form>
     </div>
 </div>
 
@@ -689,9 +956,59 @@ function applyFilters() {
     });
 }
 
+/* SIDEBAR TOGGLE FUNCTIONALITY */
+function setupSidebarNavigation() {
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const colSpb = document.getElementById("col-spb");
+    const colBunker = document.getElementById("col-bunker");
+
+    navButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            navButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const target = btn.getAttribute("data-target");
+            if (target === "all") {
+                colSpb.classList.remove("tab-hidden");
+                colBunker.classList.remove("tab-hidden");
+            } else if (target === "spb") {
+                colSpb.classList.remove("tab-hidden");
+                colBunker.classList.add("tab-hidden");
+            } else if (target === "bunker") {
+                colSpb.classList.add("tab-hidden");
+                colBunker.classList.remove("tab-hidden");
+            }
+        });
+    });
+}
+
+/* LOGIN MODAL HANDLERS */
+function setupLoginModal() {
+    const modal = document.getElementById("loginModal");
+    const openBtn = document.getElementById("openLoginModal");
+    const closeBtn = document.getElementById("closeLoginModal");
+
+    openBtn.addEventListener("click", () => modal.classList.add("active"));
+    closeBtn.addEventListener("click", () => modal.classList.remove("active"));
+    
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.remove("active");
+    });
+}
+
+function handleLoginSubmit() {
+    const id = document.getElementById("loginId").value;
+    showToast(`Form submitted for ID: ${id}`);
+    document.getElementById("loginModal").classList.remove("active");
+    document.getElementById("loginForm").reset();
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     loadTableData(csvUrlSPB, "spbTbody", "spb");
     loadTableData(csvUrlBunker, "bunkerTbody", "bunker");
+
+    setupSidebarNavigation();
+    setupLoginModal();
 
     document.getElementById("globalFilter").addEventListener("input", applyFilters);
     document.getElementById("columnFilter").addEventListener("change", applyFilters);
