@@ -492,8 +492,6 @@
             tr.clickable-row { position: relative; margin: 0; padding: 8px 10px; border-bottom: 1px solid var(--border-color); }
             tr.clickable-row td { display: grid; grid-template-columns: 42% 58%; gap: 6px; padding: 5px 0; border: 0; font-size: .78rem; word-break: break-word; }
             tr.clickable-row td::before { font-weight: 700; color: #607d8b; }
-            
-            /* SPB Mobile Headers (Includes Tipe Pengajuan) */
             .spb-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .spb-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Berangkat"; }
             .spb-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
@@ -501,15 +499,13 @@
             .spb-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
             .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
             .spb-table tr.clickable-row td:nth-child(7)::before { content: "Aksi"; }
-            
-            /* Bunker Mobile Headers (Tipe Pengajuan Excluded) */
             .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
             .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
             .bunker-table tr.clickable-row td:nth-child(4)::before { content: "Pemohon / No.HP"; }
-            .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Kode Billing"; }
-            .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Aksi"; }
-
+            .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
+            .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
+            .bunker-table tr.clickable-row td:nth-child(7)::before { content: "Aksi"; }
             tr:not(.clickable-row) td { padding: 18px 10px; font-size: .78rem; }
             code { white-space: normal; overflow-wrap: anywhere; }
         }
@@ -560,7 +556,7 @@
                 <option value="date">Tanggal</option>
                 <option value="vessel">Nama Kapal</option>
                 <option value="agent">Agen / Pemilik / Pemohon</option>
-                <option value="tipe">Tipe Pengajuan (Khusus SPB)</option>
+                <option value="tipe">Tipe Pengajuan</option>
                 <option value="billing">Kode Billing</option>
             </select>
             <select id="dateSort">
@@ -577,7 +573,7 @@
     </div>
 
     <div class="dashboard-grid">
-        <!-- BUNKER DATA (No Tipe Pengajuan) -->
+        <!-- BUNKER DATA -->
         <div class="column" id="col-bunker">
             <div class="column-header">DATA TAGIHAN BUNKER</div>
             <div class="table-responsive">
@@ -588,18 +584,19 @@
                             <th>Tanggal Kegiatan</th>
                             <th>Nama Kapal</th>
                             <th>Pemohon / No.HP</th>
+                            <th>Tipe Pengajuan</th>
                             <th>Kode Billing</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="bunkerTbody">
-                        <tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                        <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- SPB DATA (Keeps Tipe Pengajuan) -->
+        <!-- SPB DATA -->
         <div class="column tab-hidden" id="col-spb">
             <div class="column-header">DATA TAGIHAN SPB</div>
             <div class="table-responsive">
@@ -765,58 +762,36 @@ async function loadTableData(url, tbodyId, type) {
 
             if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
 
-            if (type === 'spb') {
-                html += `
-                <tr class="clickable-row"
-                    data-billing="${escapeHtml(billingCode)}"
-                    data-date="${escapeHtml(dateVal)}"
-                    data-vessel="${escapeHtml(vesselName)}"
-                    data-agent="${escapeHtml(agentName)}"
-                    data-tipe="${escapeHtml(submissionType)}">
-                    <td>${count++}</td>
-                    <td>${escapeHtml(dateVal)}</td>
-                    <td><strong>${escapeHtml(vesselName)}</strong></td>
-                    <td>${escapeHtml(agentName)}</td>
-                    <td>${escapeHtml(submissionType)}</td>
-                    <td><code>${escapeHtml(billingCode)}</code></td>
-                    <td>
-                        <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
-                            📄 Unduh PDF
-                        </button>
-                    </td>
-                </tr>`;
-            } else {
-                html += `
-                <tr class="clickable-row"
-                    data-billing="${escapeHtml(billingCode)}"
-                    data-date="${escapeHtml(dateVal)}"
-                    data-vessel="${escapeHtml(vesselName)}"
-                    data-agent="${escapeHtml(agentName)}">
-                    <td>${count++}</td>
-                    <td>${escapeHtml(dateVal)}</td>
-                    <td><strong>${escapeHtml(vesselName)}</strong></td>
-                    <td>${escapeHtml(agentName)}</td>
-                    <td><code>${escapeHtml(billingCode)}</code></td>
-                    <td>
-                        <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
-                            📄 Unduh PDF
-                        </button>
-                    </td>
-                </tr>`;
-            }
+            html += `
+            <tr class="clickable-row"
+                data-billing="${escapeHtml(billingCode)}"
+                data-date="${escapeHtml(dateVal)}"
+                data-vessel="${escapeHtml(vesselName)}"
+                data-agent="${escapeHtml(agentName)}"
+                data-tipe="${escapeHtml(submissionType)}">
+                <td>${count++}</td>
+                <td>${escapeHtml(dateVal)}</td>
+                <td><strong>${escapeHtml(vesselName)}</strong></td>
+                <td>${escapeHtml(agentName)}</td>
+                <td>${escapeHtml(submissionType)}</td>
+                <td><code>${escapeHtml(billingCode)}</code></td>
+                <td>
+                    <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
+                        📄 Unduh PDF
+                    </button>
+                </td>
+            </tr>`;
         });
 
         if (count === 1) {
-            const colSpan = type === 'bunker' ? 6 : 7;
-            tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
         } else {
             tbody.innerHTML = html;
             attachRowClickEvents();
         }
     } catch (err) {
         console.error("Failed to load data:", err);
-        const colSpan = type === 'bunker' ? 6 : 7;
-        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
 }
 
@@ -849,7 +824,7 @@ function parseDateVal(value) {
 
 function getSearchValue(row, field) {
     if (field === "all") {
-        return [row.dataset.date, row.dataset.vessel, row.dataset.agent, row.dataset.tipe || '', row.dataset.billing].join(" ");
+        return [row.dataset.date, row.dataset.vessel, row.dataset.agent, row.dataset.tipe, row.dataset.billing].join(" ");
     }
     return row.dataset[field] || "";
 }
@@ -899,3 +874,52 @@ function setupSidebarNavigation() {
                 colSpb.classList.add("tab-hidden");
             } else if (target === "spb") {
                 colSpb.classList.remove("tab-hidden");
+                colBunker.classList.add("tab-hidden");
+            }
+        });
+    });
+}
+
+function setupLoginModal() {
+    const modal = document.getElementById("loginModal");
+    const openBtn = document.getElementById("openLoginModal");
+    const closeBtn = document.getElementById("closeLoginModal");
+
+    openBtn.addEventListener("click", () => modal.classList.add("active"));
+    closeBtn.addEventListener("click", () => modal.classList.remove("active"));
+    
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.remove("active");
+    });
+}
+
+function handleLoginSubmit() {
+    const id = document.getElementById("loginId").value;
+    showToast(`Form submitted for ID: ${id}`);
+    document.getElementById("loginModal").classList.remove("active");
+    document.getElementById("loginForm").reset();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    loadTableData(csvUrlSPB, "spbTbody", "spb");
+    loadTableData(csvUrlBunker, "bunkerTbody", "bunker");
+
+    setupSidebarNavigation();
+    setupLoginModal();
+
+    document.getElementById("globalFilter").addEventListener("input", applyFilters);
+    document.getElementById("columnFilter").addEventListener("change", applyFilters);
+    document.getElementById("dateSort").addEventListener("change", applyFilters);
+    document.getElementById("resetFilter").addEventListener("click", () => {
+        document.getElementById("globalFilter").value = "";
+        document.getElementById("columnFilter").value = "all";
+        document.getElementById("dateSort").value = "none";
+        document.querySelectorAll(".clickable-row").forEach(row => row.classList.remove("hidden-row"));
+    });
+
+    setTimeout(() => window.location.reload(), autoRefreshSeconds * 1000);
+});
+</script>
+
+</body>
+</html>
