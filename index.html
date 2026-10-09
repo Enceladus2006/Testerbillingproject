@@ -174,35 +174,6 @@
             font-size: .88rem;
         }
 
-        .legend {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto 18px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px 16px;
-            background: var(--card-bg);
-            padding: 10px 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,.05);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: .78rem;
-        }
-
-        .color-box {
-            width: 14px;
-            height: 14px;
-            border-radius: 3px;
-            border: 1px solid rgba(0,0,0,.1);
-            flex: 0 0 auto;
-        }
-
         .dashboard-grid {
             width: 100%;
             max-width: 1200px;
@@ -266,13 +237,8 @@
             z-index: 5;
         }
 
-        .expire-safe { background-color: #fff; }
-        .expire-warning { background-color: #fff3cd; color: #856404; }
-        .expire-critical { background-color: #f8d7da; color: #721c24; font-weight: 600; }
-        .expire-expired { background-color: #e2e3e5; color: #343a40; font-weight: 700; }
-
         tr.clickable-row { cursor: pointer; }
-        tr.clickable-row:hover { filter: brightness(.97); }
+        tr.clickable-row:hover { background-color: #f0f4f8; }
 
         code {
             font-family: Consolas, monospace;
@@ -517,8 +483,6 @@
             .header-section { margin-bottom: 12px; }
             h1 { font-size: 1.05rem; }
             .subtitle { font-size: .75rem; line-height: 1.35; }
-            .legend { justify-content: flex-start; gap: 7px 12px; margin-bottom: 14px; padding: 9px 10px; }
-            .legend-item { font-size: .7rem; }
             .filter-controls { grid-template-columns: 1fr; }
             .filter-controls input, .filter-controls select, .filter-controls button { width: 100%; }
             .column-header { font-size: .82rem; padding: 11px 8px; }
@@ -534,16 +498,14 @@
             .spb-table tr.clickable-row td:nth-child(4)::before { content: "Agen / Pemilik"; }
             .spb-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
             .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
-            .spb-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
-            .spb-table tr.clickable-row td:nth-child(8)::before { content: "Aksi"; }
+            .spb-table tr.clickable-row td:nth-child(7)::before { content: "Aksi"; }
             .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
             .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
             .bunker-table tr.clickable-row td:nth-child(4)::before { content: "Pemohon / No.HP"; }
             .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
             .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
-            .bunker-table tr.clickable-row td:nth-child(7)::before { content: "Tenggang Waktu"; }
-            .bunker-table tr.clickable-row td:nth-child(8)::before { content: "Aksi"; }
+            .bunker-table tr.clickable-row td:nth-child(7)::before { content: "Aksi"; }
             tr:not(.clickable-row) td { padding: 18px 10px; font-size: .78rem; }
             code { white-space: normal; overflow-wrap: anywhere; }
         }
@@ -582,14 +544,7 @@
 
     <div class="header-section">
         <h1>Dashboard Monitoring Tagihan</h1>
-        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Tenggang waktu maksimal 7 hari • Data diperbarui otomatis setiap 5 menit</div>
-    </div>
-
-    <div class="legend">
-        <div class="legend-item"><div class="color-box" style="background-color: #ffffff;"></div><span>Aman (0-2 Hari)</span></div>
-        <div class="legend-item"><div class="color-box" style="background-color: #fff3cd;"></div><span>Peringatan (3-5 Hari)</span></div>
-        <div class="legend-item"><div class="color-box" style="background-color: #f8d7da;"></div><span>Jatuh Tempo (6-7 Hari)</span></div>
-        <div class="legend-item"><div class="color-box" style="background-color: #e2e3e5;"></div><span>Expire (&gt;7 Hari)</span></div>
+        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis setiap 5 menit</div>
     </div>
 
     <div class="filter-panel">
@@ -603,7 +558,6 @@
                 <option value="agent">Agen / Pemilik / Pemohon</option>
                 <option value="tipe">Tipe Pengajuan</option>
                 <option value="billing">Kode Billing</option>
-                <option value="aging">Tenggang Waktu</option>
             </select>
             <select id="dateSort">
                 <option value="none">Urutan Tanggal: Default</option>
@@ -632,12 +586,11 @@
                             <th>Pemohon / No.HP</th>
                             <th>Tipe Pengajuan</th>
                             <th>Kode Billing</th>
-                            <th>Tenggang Waktu</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="bunkerTbody">
-                        <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                        <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -656,12 +609,11 @@
                             <th>Agen / Pemilik</th>
                             <th>Tipe Pengajuan</th>
                             <th>Kode Billing</th>
-                            <th>Tenggang Waktu</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="spbTbody">
-                        <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
+                        <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -728,35 +680,6 @@ function parseCSV(text) {
     return result;
 }
 
-function getAgingStyle(dateString) {
-    if (!dateString) return { class: 'expire-safe', text: '0 Hari' };
-    const cleanDate = dateString.replace(/\//g, '-');
-    
-    let timestamp = 0;
-    const parts = cleanDate.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
-    if (parts) {
-        timestamp = new Date(Number(parts[3]), Number(parts[2]) - 1, Number(parts[1])).getTime();
-    } else {
-        timestamp = Date.parse(cleanDate);
-    }
-
-    if (isNaN(timestamp) || timestamp <= 0) return { class: 'expire-safe', text: '-' };
-
-    const diffSeconds = Math.floor((Date.now() - timestamp) / 1000);
-    let daysOld = Math.floor(diffSeconds / (60 * 60 * 24));
-    if (daysOld < 0) daysOld = 0;
-
-    let text = daysOld + " Hari";
-    if (daysOld > 7) {
-        return { class: 'expire-expired', text: text + " (Expire)" };
-    } else if (daysOld >= 6) {
-        return { class: 'expire-critical', text: text + " (Jatuh Tempo)" };
-    } else if (daysOld >= 3) {
-        return { class: 'expire-warning', text: text + " (Peringatan)" };
-    }
-    return { class: 'expire-safe', text: text + " (Aman)" };
-}
-
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.innerText = text || '';
@@ -777,7 +700,7 @@ async function downloadPdf(billingCode) {
     showToast("Mencari berkas PDF...");
 
     if (!GDRIVE_API_KEY || GDRIVE_API_KEY.includes("YOUR_VALID_GOOGLE_DRIVE_API_KEY_HERE")) {
-        showToast("⚠️️ Google Drive API Key belum disetting!");
+        showToast("⚠ Google Drive API Key belum disetting!");
         return;
     }
 
@@ -839,23 +762,19 @@ async function loadTableData(url, tbodyId, type) {
 
             if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
 
-            const aging = getAgingStyle(dateVal);
-
             html += `
-            <tr class="clickable-row ${aging.class}"
+            <tr class="clickable-row"
                 data-billing="${escapeHtml(billingCode)}"
                 data-date="${escapeHtml(dateVal)}"
                 data-vessel="${escapeHtml(vesselName)}"
                 data-agent="${escapeHtml(agentName)}"
-                data-tipe="${escapeHtml(submissionType)}"
-                data-aging="${escapeHtml(aging.text)}">
+                data-tipe="${escapeHtml(submissionType)}">
                 <td>${count++}</td>
                 <td>${escapeHtml(dateVal)}</td>
                 <td><strong>${escapeHtml(vesselName)}</strong></td>
                 <td>${escapeHtml(agentName)}</td>
                 <td>${escapeHtml(submissionType)}</td>
                 <td><code>${escapeHtml(billingCode)}</code></td>
-                <td>${aging.text}</td>
                 <td>
                     <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
                         📄 Unduh PDF
@@ -865,14 +784,14 @@ async function loadTableData(url, tbodyId, type) {
         });
 
         if (count === 1) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
         } else {
             tbody.innerHTML = html;
             attachRowClickEvents();
         }
     } catch (err) {
         console.error("Failed to load data:", err);
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
 }
 
@@ -905,7 +824,7 @@ function parseDateVal(value) {
 
 function getSearchValue(row, field) {
     if (field === "all") {
-        return [row.dataset.date, row.dataset.vessel, row.dataset.agent, row.dataset.tipe, row.dataset.billing, row.dataset.aging].join(" ");
+        return [row.dataset.date, row.dataset.vessel, row.dataset.agent, row.dataset.tipe, row.dataset.billing].join(" ");
     }
     return row.dataset[field] || "";
 }
