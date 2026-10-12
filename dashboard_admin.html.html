@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+    <title>Dashboard Admin - KSOP Kelas III Labuan Bajo</title>
+    <style>
+        :root {
+            --bg-color: #f3f6f9;
+            --card-bg: #ffffff;
+            --text-color: #263238;
+            --muted: #607d8b;
+            --border-color: #dfe5ea;
+            --primary: #005baa;
+            --primary-dark: #003f7d;
+            --gold: #d4a72c;
+            --sidebar-width: 250px;
+            --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        .official-header {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            width: 100%;
+            background: #fff;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            padding: 14px 16px 12px;
+        }
+
+        .official-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .official-logo { width: 62px; height: 72px; object-fit: contain; flex: 0 0 auto; }
+        .official-title { text-align: center; line-height: 1.25; color: #17324d; }
+        .official-title .ministry { font-size: .82rem; font-weight: 700; letter-spacing: .4px; }
+        .official-title .office { font-size: 1.18rem; font-weight: 800; text-transform: uppercase; }
+        .official-title .location { font-size: .88rem; font-weight: 700; margin-top: 2px; }
+
+        .sidebar {
+            grid-column: 1 / 2;
+            grid-row: 1 / 3;
+            background: var(--primary-dark);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 8px rgba(0,0,0,.15);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            background: rgba(0,0,0,0.15);
+            border-bottom: 3px solid var(--gold);
+            text-align: center;
+        }
+
+        .user-badge {
+            font-size: .85rem;
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 10px;
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: .85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: #c0392b; }
+
+        .sidebar-menu { list-style: none; padding: 15px 0; margin: 0; flex: 1; }
+        .sidebar-menu li button {
+            width: 100%; padding: 12px 20px; background: none; border: none;
+            color: #d1e3f3; text-align: left; font-size: .9rem; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; gap: 10px;
+            transition: all 0.2s ease; border-left: 4px solid transparent;
+        }
+        .sidebar-menu li button:hover, .sidebar-menu li button.active {
+            background: var(--primary); color: #fff; border-left-color: var(--gold);
+        }
+
+        .main-wrapper {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            padding: 18px 16px 24px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header-section { width: 100%; margin: 0 auto 16px; text-align: center; }
+        h1 { margin: 0 0 4px; color: #263b50; font-size: clamp(1.15rem, 4vw, 1.8rem); }
+        .admin-tag { background: var(--gold); color: #17324d; padding: 2px 8px; border-radius: 4px; font-size: .8rem; font-weight: 800; }
+        .subtitle { color: var(--muted); font-size: .88rem; margin-top: 6px; }
+
+        .dashboard-grid { width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .column { width: 100%; min-width: 0; transition: all 0.3s ease; }
+        .column.tab-hidden { display: none !important; }
+
+        .column-header {
+            padding: 12px 14px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #fff;
+            border-radius: 9px 9px 0 0;
+            font-weight: 700;
+            text-align: center;
+            font-size: .95rem;
+            letter-spacing: .25px;
+        }
+
+        .table-responsive {
+            background: var(--card-bg);
+            border-radius: 0 0 9px 9px;
+            box-shadow: 0 3px 8px rgba(0,0,0,.07);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-top: 0;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-size: .84rem; vertical-align: middle; }
+        th { background: #f7f9fb; color: #30485f; font-weight: 700; position: sticky; top: 0; z-index: 5; }
+
+        tr.clickable-row { cursor: pointer; }
+        tr.clickable-row:hover { background-color: #f0f4f8; }
+
+        code { font-family: Consolas, monospace; background: #eef2f5; padding: 3px 5px; border-radius: 4px; font-size: .84em; white-space: nowrap; }
+
+        .btn-download {
+            display: inline-flex; align-items: center; gap: 4px;
+            background-color: #27ae60; color: #ffffff; border: 0;
+            padding: 6px 12px; border-radius: 4px; font-size: .78rem; font-weight: 600;
+            white-space: nowrap; cursor: pointer; transition: background-color 0.2s ease;
+        }
+        .btn-download:hover { background-color: #219653; }
+
+        .filter-panel {
+            width: 100%; margin: 0 auto 18px; background: #fff;
+            border: 1px solid var(--border-color); border-radius: 9px;
+            box-shadow: 0 3px 8px rgba(0,0,0,.06); padding: 12px;
+        }
+        .filter-title { font-weight: 700; color: #30485f; margin-bottom: 9px; font-size: .9rem; }
+        .filter-controls { display: grid; grid-template-columns: minmax(200px, 1.5fr) minmax(150px, .9fr) minmax(150px, .9fr) auto; gap: 8px; }
+        .search-group { display: flex; gap: 6px; align-items: center; }
+        .search-group input { flex: 1; min-height: 40px; border: 1px solid #cfd8df; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: .82rem; }
+        .search-group button { min-height: 40px; background: var(--primary); color: #fff; border: 0; border-radius: 6px; cursor: pointer; font-weight: 700; padding: 8px 14px; font-size: .82rem; white-space: nowrap; }
+        .search-group button:hover { background: var(--primary-dark); }
+        .filter-controls select, .filter-controls button { min-height: 40px; border: 1px solid #cfd8df; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: .82rem; }
+        .filter-controls button#resetFilter { background: #607d8b; color: #fff; border: 0; cursor: pointer; font-weight: 700; padding: 8px 16px; }
+        .filter-controls button#resetFilter:hover { background: #455a64; }
+        .filter-info { margin-top: 8px; color: var(--muted); font-size: .74rem; line-height: 1.35; }
+        .hidden-row { display: none !important; }
+
+        #toast {
+            visibility: hidden; width: min(92vw, 450px); background-color: #263b50;
+            color: #fff; text-align: center; border-radius: 8px; padding: 12px 16px;
+            position: fixed; z-index: 1000; left: 50%; bottom: 20px;
+            transform: translateX(-50%); font-size: .9rem; box-shadow: 0 4px 14px rgba(0,0,0,.3);
+        }
+        #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.7s; }
+
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 20px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 20px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        @media (max-width: 768px) {
+            body { display: flex; flex-direction: column; }
+            .official-header { order: 1; }
+            .sidebar { order: 2; width: 100%; }
+            .sidebar-header { padding: 10px 16px; }
+            .sidebar-menu { display: flex; padding: 0; overflow-x: auto; }
+            .sidebar-menu li { flex: 1; }
+            .sidebar-menu li button { padding: 10px; justify-content: center; border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+            .sidebar-menu li button:hover, .sidebar-menu li button.active { border-left-color: transparent; border-bottom-color: var(--gold); }
+            .main-wrapper { order: 3; padding: 0 8px 20px; }
+        }
+
+        @media (max-width: 700px) {
+            .official-header { margin-bottom: 0; padding: 12px 8px 10px; }
+            .official-header-inner { gap: 9px; }
+            .official-logo { width: 48px; height: 58px; }
+            .official-title .ministry { font-size: .65rem; }
+            .official-title .office { font-size: .88rem; }
+            .official-title .location { font-size: .68rem; }
+            .header-section { margin-bottom: 12px; margin-top: 12px; }
+            h1 { font-size: 1.05rem; }
+            .subtitle { font-size: .75rem; line-height: 1.35; }
+            .filter-controls { grid-template-columns: 1fr; }
+            .filter-controls .search-group, .filter-controls select, .filter-controls button { width: 100%; }
+            .column-header { font-size: .82rem; padding: 11px 8px; }
+            .table-responsive { max-height: none; overflow: visible; }
+            table, thead, tbody, tr, th, td { display: block; width: 100%; }
+            thead { display: none; }
+            tr.clickable-row { position: relative; margin: 0; padding: 8px 10px; border-bottom: 1px solid var(--border-color); }
+            tr.clickable-row td { display: grid; grid-template-columns: 42% 58%; gap: 6px; padding: 5px 0; border: 0; font-size: .78rem; word-break: break-word; }
+            tr.clickable-row td::before { font-weight: 700; color: #607d8b; }
+            
+            .spb-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
+            .spb-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Berangkat"; }
+            .spb-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
+            .spb-table tr.clickable-row td:nth-child(4)::before { content: "Agen / Pemilik"; }
+            .spb-table tr.clickable-row td:nth-child(5)::before { content: "Tipe Pengajuan"; }
+            .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
+            .spb-table tr.clickable-row td:nth-child(7)::before { content: "Aksi"; }
+            
+            .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
+            .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
+            .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
+            .bunker-table tr.clickable-row td:nth-child(4)::before { content: "Pemohon / No.HP"; }
+            .bunker-table tr.clickable-row td:nth-child(5)::before { content: "Kode Billing"; }
+            .bunker-table tr.clickable-row td:nth-child(6)::before { content: "Aksi"; }
+
+            tr:not(.clickable-row) td { padding: 18px 10px; font-size: .78rem; }
+            code { white-space: normal; overflow-wrap: anywhere; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="official-header">
+    <div class="official-header-inner">
+        <img class="official-logo" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg" alt="Logo Kementerian Perhubungan">
+        <div class="official-title">
+            <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
+            <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
+            <div class="location">KELAS III LABUAN BAJO</div>
+        </div>
+    </div>
+</header>
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <span class="user-badge" id="currentUserDisplay">👤 Admin: KSOPLBJ</span>
+        <button type="button" class="btn-logout" id="btnLogout">🔒 Keluar / Logout</button>
+    </div>
+    <ul class="sidebar-menu">
+        <li><button type="button" class="nav-btn active" data-target="bunker">🛢️ Tagihan Bunker</button></li>
+        <li><button type="button" class="nav-btn" data-target="spb">⚓ Tagihan SPB</button></li>
+    </ul>
+</nav>
+
+<div class="main-wrapper">
+    <div class="header-section">
+        <h1>Dashboard Monitoring Tagihan <span class="admin-tag">ADMIN MODE</span></h1>
+        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Mode Akses Administrator</div>
+    </div>
+
+    <div class="filter-panel">
+        <div class="filter-title">🔎 Filter &amp; Urutkan Data</div>
+        <div class="filter-controls">
+            <div class="search-group">
+                <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
+                <button type="button" id="btnFind">Cari</button>
+            </div>
+            <select id="columnFilter">
+                <option value="all">Cari di: Semua Kolom</option>
+                <option value="date">Tanggal</option>
+                <option value="vessel">Nama Kapal</option>
+                <option value="agent">Agen / Pemilik / Pemohon</option>
+                <option value="tipe">Tipe Pengajuan (Khusus SPB)</option>
+                <option value="billing">Kode Billing</option>
+            </select>
+            <select id="dateSort">
+                <option value="none">Urutan Tanggal: Default</option>
+                <option value="newest">Terbaru → Terlama</option>
+                <option value="oldest">Terlama → Terbaru</option>
+            </select>
+            <button type="button" id="resetFilter">Reset</button>
+        </div>
+        <div class="filter-info">
+            Filter dan pengurutan hanya berlaku pada browser pengguna yang sedang membuka halaman. Data diperbarui otomatis setiap 5 menit.
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="column" id="col-bunker">
+            <div class="column-header">DATA TAGIHAN BUNKER</div>
+            <div class="table-responsive">
+                <table class="bunker-table" data-section="bunker">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Kegiatan</th>
+                            <th>Nama Kapal</th>
+                            <th>Pemohon / No.HP</th>
+                            <th>Kode Billing</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bunkerTbody">
+                        <tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="column tab-hidden" id="col-spb">
+            <div class="column-header">DATA TAGIHAN SPB</div>
+            <div class="table-responsive">
+                <table class="spb-table" data-section="spb">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal Berangkat</th>
+                            <th>Nama Kapal</th>
+                            <th>Agen / Pemilik</th>
+                            <th>Tipe Pengajuan</th>
+                            <th>Kode Billing</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spbTbody">
+                        <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast">Kode Billing disalin!</div>
+
+<script>
+// ADMIN SESSION GUARD
+if (sessionStorage.getItem("adminLoggedIn") !== "true") {
+    alert("Akses ditolak! Silakan login terlebih dahulu.");
+    window.location.href = "index.html";
+}
+
+const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
+const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
+
+const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
+const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
+const autoRefreshSeconds = 180;
+
+function parseCSV(text) {
+    const lines = text.split(/\r\n|\n/);
+    const result = [];
+    for (let i = 0; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let j = 0; j < lines[i].length; j++) {
+            const char = lines[i][j];
+            if (char === '"') {
+                insideQuote = !insideQuote;
+            } else if (char === ',' && !insideQuote) {
+                row.push(entry.trim().replace(/^"|"$/g, ''));
+                entry = '';
+            } else {
+                entry += char;
+            }
+        }
+        row.push(entry.trim().replace(/^"|"$/g, ''));
+        result.push(row);
+    }
+    return result;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text || '';
+    return div.innerHTML;
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+async function downloadPdf(billingCode) {
+    if (!billingCode) return;
+
+    showToast("Mencari berkas PDF...");
+    if (!GDRIVE_API_KEY || GDRIVE_API_KEY.includes("YOUR_VALID_GOOGLE_DRIVE_API_KEY_HERE")) {
+        showToast("⚠ Google Drive API Key belum disetting!");
+        return;
+    }
+
+    const query = `'${GDRIVE_FOLDER_ID}' in parents and name contains '${billingCode}' and trashed = false`;
+    const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)&key=${GDRIVE_API_KEY}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.error) {
+            showToast("❌ API Error: " + (data.error.message || "Gagal terhubung"));
+            return;
+        }
+
+        if (data.files && data.files.length > 0) {
+            const targetFile = data.files[0];
+            const directUrl = `https://drive.google.com/file/d/${targetFile.id}/view?usp=sharing`;
+            window.open(directUrl, '_blank');
+            showToast(`Membuka berkas ${targetFile.name}...`);
+        } else {
+            showToast(`⚠️ File PDF tidak ditemukan! (${billingCode})`);
+        }
+    } catch (err) {
+        showToast("❌ Gagal terhubung ke Google Drive API.");
+    }
+}
+
+async function loadTableData(url, tbodyId, type) {
+    const tbody = document.getElementById(tbodyId);
+    try {
+        const response = await fetch(url);
+        const text = await response.text();
+        const rows = parseCSV(text);
+
+        if (rows.length > 0) rows.shift();
+
+        let html = '';
+        let count = 1;
+
+        rows.forEach(row => {
+            let vesselName, dateVal, agentName, billingCode, submissionType;
+
+            if (type === 'spb') {
+                vesselName     = row[1] || '';
+                dateVal        = row[5] || '';
+                agentName      = row[8] || '';
+                billingCode    = row[9] || '';
+                submissionType = row[10] || '';
+            } else {
+                vesselName     = row[1] || '';
+                agentName      = row[7] || '';
+                dateVal        = row[8] || '';
+                billingCode    = row[9] || '';
+                submissionType = row[10] || '';
+            }
+
+            if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
+
+            if (type === 'spb') {
+                html += `
+                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}" data-tipe="${escapeHtml(submissionType)}">
+                    <td>${count++}</td>
+                    <td>${escapeHtml(dateVal)}</td>
+                    <td><strong>${escapeHtml(vesselName)}</strong></td>
+                    <td>${escapeHtml(agentName)}</td>
+                    <td>${escapeHtml(submissionType)}</td>
+                    <td><code>${escapeHtml(billingCode)}</code></td>
+                    <td>
+                        <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
+                            📄 Unduh PDF
+                        </button>
+                    </td>
+                </tr>`;
+            } else {
+                html += `
+                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}">
+                    <td>${count++}</td>
+                    <td>${escapeHtml(dateVal)}</td>
+                    <td><strong>${escapeHtml(vesselName)}</strong></td>
+                    <td>${escapeHtml(agentName)}</td>
+                    <td><code>${escapeHtml(billingCode)}</code></td>
+                    <td>
+                        <button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">
+                            📄 Unduh PDF
+                        </button>
+                    </td>
+                </tr>`;
+            }
+        });
+
+        if (count === 1) {
+            const colSpan = type === 'bunker' ? 6 : 7;
+            tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #7f8c8d; padding: 20px;">Tidak ada antrean data ${type.toUpperCase()} Belum Lunas.</td></tr>`;
+        } else {
+            tbody.innerHTML = html;
+            attachRowClickEvents();
+        }
+    } catch (err) {
+        const colSpan = type === 'bunker' ? 6 : 7;
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
+    }
+}
+
+function attachRowClickEvents() {
+    document.querySelectorAll(".clickable-row").forEach(row => {
+        row.onclick = function() {
+            const billingCode = this.getAttribute("data-billing");
+            if (!billingCode) return;
+            navigator.clipboard.writeText(billingCode).then(() => {
+                showToast("Berhasil Menyalin: " + billingCode);
+            }).catch(err => console.error(err));
+        };
+    });
+}
+
+function normalize(value) { return String(value || "").toLowerCase().trim(); }
+
+function parseDateVal(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return 0;
+    let m = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})/);
+    if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1])).getTime();
+    m = raw.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/);
+    if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getTime();
+    const parsed = Date.parse(raw);
+    return isNaN(parsed) ? 0 : parsed;
+}
+
+function getSearchValue(row, field) {
+    if (field === "all") {
+        return [row.dataset.date, row.dataset.vessel, row.dataset.agent, row.dataset.tipe || '', row.dataset.billing].join(" ");
+    }
+    return row.dataset[field] || "";
+}
+
+function applyFilters() {
+    const search = normalize(document.getElementById("globalFilter").value);
+    const field = document.getElementById("columnFilter").value;
+    const sort = document.getElementById("dateSort").value;
+
+    document.querySelectorAll("table[data-section]").forEach(table => {
+        const tbody = table.querySelector("tbody");
+        if (!tbody) return;
+        const rows = Array.from(tbody.querySelectorAll("tr.clickable-row"));
+
+        rows.forEach(row => {
+            const value = normalize(getSearchValue(row, field));
+            row.classList.toggle("hidden-row", Boolean(search) && !value.includes(search));
+        });
+
+        if (sort !== "none") {
+            rows.sort((a, b) => {
+                const da = parseDateVal(a.dataset.date);
+                const db = parseDateVal(b.dataset.date);
+                return sort === "newest" ? db - da : da - db;
+            });
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    });
+}
+
+function executeSearch() {
+    applyFilters();
+    const globalFilter = document.getElementById("globalFilter");
+    if (globalFilter) globalFilter.blur();
+}
+
+function setupSidebarNavigation() {
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const colSpb = document.getElementById("col-spb");
+    const colBunker = document.getElementById("col-bunker");
+
+    navButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            navButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const target = btn.getAttribute("data-target");
+            if (target === "bunker") {
+                colBunker.classList.remove("tab-hidden");
+                colSpb.classList.add("tab-hidden");
+            } else if (target === "spb") {
+                colSpb.classList.remove("tab-hidden");
+                colBunker.classList.add("tab-hidden");
+            }
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const adminUser = sessionStorage.getItem("adminUser") || "Admin";
+    document.getElementById("currentUserDisplay").textContent = "👤 Admin: " + adminUser;
+
+    document.getElementById("btnLogout").addEventListener("click", () => {
+        sessionStorage.removeItem("adminLoggedIn");
+        sessionStorage.removeItem("adminUser");
+        window.location.href = "index.html";
+    });
+
+    loadTableData(csvUrlSPB, "spbTbody", "spb");
+    loadTableData(csvUrlBunker, "bunkerTbody", "bunker");
+
+    setupSidebarNavigation();
+
+    document.getElementById("globalFilter").addEventListener("input", applyFilters);
+    document.getElementById("btnFind").addEventListener("click", executeSearch);
+    document.getElementById("globalFilter").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            executeSearch();
+        }
+    });
+
+    document.getElementById("columnFilter").addEventListener("change", applyFilters);
+    document.getElementById("dateSort").addEventListener("change", applyFilters);
+    document.getElementById("resetFilter").addEventListener("click", () => {
+        document.getElementById("globalFilter").value = "";
+        document.getElementById("columnFilter").value = "all";
+        document.getElementById("dateSort").value = "none";
+        document.querySelectorAll(".clickable-row").forEach(row => row.classList.remove("hidden-row"));
+    });
+
+    setTimeout(() => window.location.reload(), autoRefreshSeconds * 1000);
+});
+</script>
+</body>
+</html>
