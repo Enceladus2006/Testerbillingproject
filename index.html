@@ -31,7 +31,6 @@
             min-height: 100vh;
         }
 
-        /* --- OFFICIAL HEADER (DESKTOP GRID PLACEMENT) --- */
         .official-header {
             grid-column: 2 / 3;
             grid-row: 1 / 2;
@@ -64,25 +63,10 @@
             color: #17324d;
         }
 
-        .official-title .ministry {
-            font-size: .82rem;
-            font-weight: 700;
-            letter-spacing: .4px;
-        }
+        .official-title .ministry { font-size: .82rem; font-weight: 700; letter-spacing: .4px; }
+        .official-title .office { font-size: 1.18rem; font-weight: 800; text-transform: uppercase; }
+        .official-title .location { font-size: .88rem; font-weight: 700; margin-top: 2px; }
 
-        .official-title .office {
-            font-size: 1.18rem;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .official-title .location {
-            font-size: .88rem;
-            font-weight: 700;
-            margin-top: 2px;
-        }
-
-        /* --- LEFT NAVIGATION SIDEBAR --- */
         .sidebar {
             grid-column: 1 / 2;
             grid-row: 1 / 3;
@@ -119,9 +103,7 @@
             letter-spacing: .5px;
         }
 
-        .btn-login:hover {
-            background: #c29622;
-        }
+        .btn-login:hover { background: #c29622; }
 
         .sidebar-menu {
             list-style: none;
@@ -154,7 +136,6 @@
             border-left-color: var(--gold);
         }
 
-        /* --- MAIN CONTENT AREA --- */
         .main-wrapper {
             grid-column: 2 / 3;
             grid-row: 2 / 3;
@@ -170,16 +151,8 @@
             text-align: center;
         }
 
-        h1 {
-            margin: 0 0 4px;
-            color: #263b50;
-            font-size: clamp(1.15rem, 4vw, 1.8rem);
-        }
-
-        .subtitle {
-            color: var(--muted);
-            font-size: .88rem;
-        }
+        h1 { margin: 0 0 4px; color: #263b50; font-size: clamp(1.15rem, 4vw, 1.8rem); }
+        .subtitle { color: var(--muted); font-size: .88rem; }
 
         .dashboard-grid {
             width: 100%;
@@ -189,15 +162,8 @@
             gap: 20px;
         }
 
-        .column {
-            width: 100%;
-            min-width: 0;
-            transition: all 0.3s ease;
-        }
-
-        .column.tab-hidden {
-            display: none !important;
-        }
+        .column { width: 100%; min-width: 0; transition: all 0.3s ease; }
+        .column.tab-hidden { display: none !important; }
 
         .column-header {
             padding: 12px 14px;
@@ -219,296 +185,76 @@
             border-top: 0;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: .84rem;
-            vertical-align: middle;
-        }
-
-        th {
-            background: #f7f9fb;
-            color: #30485f;
-            font-weight: 700;
-            position: sticky;
-            top: 0;
-            z-index: 5;
-        }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-size: .84rem; vertical-align: middle; }
+        th { background: #f7f9fb; color: #30485f; font-weight: 700; position: sticky; top: 0; z-index: 5; }
 
         tr.clickable-row { cursor: pointer; }
         tr.clickable-row:hover { background-color: #f0f4f8; }
 
-        code {
-            font-family: Consolas, monospace;
-            background: #eef2f5;
-            padding: 3px 5px;
-            border-radius: 4px;
-            font-size: .84em;
-            white-space: nowrap;
-        }
+        code { font-family: Consolas, monospace; background: #eef2f5; padding: 3px 5px; border-radius: 4px; font-size: .84em; white-space: nowrap; }
 
         .btn-download {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background-color: #27ae60;
-            color: #ffffff;
-            border: 0;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: .78rem;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
+            display: inline-flex; align-items: center; gap: 4px;
+            background-color: #27ae60; color: #ffffff; border: 0;
+            padding: 6px 12px; border-radius: 4px; font-size: .78rem; font-weight: 600;
+            white-space: nowrap; cursor: pointer; transition: background-color 0.2s ease;
         }
-
-        .btn-download:hover {
-            background-color: #219653;
-        }
+        .btn-download:hover { background-color: #219653; }
 
         .filter-panel {
-            width: 100%;
-            margin: 0 auto 18px;
-            background: #fff;
-            border: 1px solid var(--border-color);
-            border-radius: 9px;
-            box-shadow: 0 3px 8px rgba(0,0,0,.06);
-            padding: 12px;
+            width: 100%; margin: 0 auto 18px; background: #fff;
+            border: 1px solid var(--border-color); border-radius: 9px;
+            box-shadow: 0 3px 8px rgba(0,0,0,.06); padding: 12px;
         }
-        .filter-title {
-            font-weight: 700;
-            color: #30485f;
-            margin-bottom: 9px;
-            font-size: .9rem;
-        }
-        .filter-controls {
-            display: grid;
-            grid-template-columns: minmax(200px, 1.5fr) minmax(150px, .9fr) minmax(150px, .9fr) auto;
-            gap: 8px;
-        }
-        .search-group {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .search-group input {
-            flex: 1;
-            min-height: 40px;
-            border: 1px solid #cfd8df;
-            border-radius: 6px;
-            padding: 8px 10px;
-            font: inherit;
-            font-size: .82rem;
-        }
-        .search-group button {
-            min-height: 40px;
-            background: var(--primary);
-            color: #fff;
-            border: 0;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-            padding: 8px 14px;
-            font-size: .82rem;
-            white-space: nowrap;
-        }
+        .filter-title { font-weight: 700; color: #30485f; margin-bottom: 9px; font-size: .9rem; }
+        .filter-controls { display: grid; grid-template-columns: minmax(200px, 1.5fr) minmax(150px, .9fr) minmax(150px, .9fr) auto; gap: 8px; }
+        .search-group { display: flex; gap: 6px; align-items: center; }
+        .search-group input { flex: 1; min-height: 40px; border: 1px solid #cfd8df; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: .82rem; }
+        .search-group button { min-height: 40px; background: var(--primary); color: #fff; border: 0; border-radius: 6px; cursor: pointer; font-weight: 700; padding: 8px 14px; font-size: .82rem; white-space: nowrap; }
         .search-group button:hover { background: var(--primary-dark); }
-
-        .filter-controls select,
-        .filter-controls button {
-            min-height: 40px;
-            border: 1px solid #cfd8df;
-            border-radius: 6px;
-            padding: 8px 10px;
-            font: inherit;
-            font-size: .82rem;
-        }
-        .filter-controls button#resetFilter {
-            background: #607d8b;
-            color: #fff;
-            border: 0;
-            cursor: pointer;
-            font-weight: 700;
-            padding: 8px 16px;
-        }
+        .filter-controls select, .filter-controls button { min-height: 40px; border: 1px solid #cfd8df; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: .82rem; }
+        .filter-controls button#resetFilter { background: #607d8b; color: #fff; border: 0; cursor: pointer; font-weight: 700; padding: 8px 16px; }
         .filter-controls button#resetFilter:hover { background: #455a64; }
-        .filter-info {
-            margin-top: 8px;
-            color: var(--muted);
-            font-size: .74rem;
-            line-height: 1.35;
-        }
+        .filter-info { margin-top: 8px; color: var(--muted); font-size: .74rem; line-height: 1.35; }
         .hidden-row { display: none !important; }
 
         #toast {
-            visibility: hidden;
-            width: min(92vw, 450px);
-            background-color: #263b50;
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 12px 16px;
-            position: fixed;
-            z-index: 1000;
-            left: 50%;
-            bottom: 20px;
-            transform: translateX(-50%);
-            font-size: .9rem;
-            box-shadow: 0 4px 14px rgba(0,0,0,.3);
+            visibility: hidden; width: min(92vw, 450px); background-color: #263b50;
+            color: #fff; text-align: center; border-radius: 8px; padding: 12px 16px;
+            position: fixed; z-index: 1000; left: 50%; bottom: 20px;
+            transform: translateX(-50%); font-size: .9rem; box-shadow: 0 4px 14px rgba(0,0,0,.3);
         }
-
         #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.7s; }
 
-        @keyframes fadein {
-            from { bottom: 0; opacity: 0; }
-            to { bottom: 20px; opacity: 1; }
-        }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 20px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 20px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
-        @keyframes fadeout {
-            from { bottom: 20px; opacity: 1; }
-            to { bottom: 0; opacity: 0; }
-        }
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: #fff; border-radius: 10px; width: 90%; max-width: 380px; padding: 24px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: relative; animation: modalSlide 0.25s ease-out; }
+        @keyframes modalSlide { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .modal-header h3 { margin: 0; color: var(--primary-dark); font-size: 1.1rem; }
+        .close-modal { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #888; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: .82rem; font-weight: 700; margin-bottom: 6px; color: #333; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: .88rem; }
+        .btn-submit-login { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 6px; }
+        .btn-submit-login:hover { background: var(--primary-dark); }
+        .btn-submit-login:disabled { background: #95a5a6; cursor: not-allowed; }
 
-        /* --- LOGIN MODAL POPUP --- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #fff;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 380px;
-            padding: 24px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            position: relative;
-            animation: modalSlide 0.25s ease-out;
-        }
-
-        @keyframes modalSlide {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        .modal-header h3 {
-            margin: 0;
-            color: var(--primary-dark);
-            font-size: 1.1rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            cursor: pointer;
-            color: #888;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: .82rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #333;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: .88rem;
-        }
-
-        .btn-submit-login {
-            width: 100%;
-            padding: 10px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 6px;
-        }
-
-        .btn-submit-login:hover {
-            background: var(--primary-dark);
-        }
-
-        /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            body {
-                display: flex;
-                flex-direction: column;
-            }
-            .official-header {
-                order: 1;
-            }
-            .sidebar {
-                order: 2;
-                width: 100%;
-            }
-            .sidebar-header {
-                padding: 10px 16px;
-            }
-            .sidebar-menu {
-                display: flex;
-                padding: 0;
-                overflow-x: auto;
-            }
-            .sidebar-menu li {
-                flex: 1;
-            }
-            .sidebar-menu li button {
-                padding: 10px;
-                justify-content: center;
-                border-left: none;
-                border-bottom: 3px solid transparent;
-                white-space: nowrap;
-            }
-            .sidebar-menu li button:hover,
-            .sidebar-menu li button.active {
-                border-left-color: transparent;
-                border-bottom-color: var(--gold);
-            }
-            .main-wrapper {
-                order: 3;
-                padding: 0 8px 20px;
-            }
+            body { display: flex; flex-direction: column; }
+            .official-header { order: 1; }
+            .sidebar { order: 2; width: 100%; }
+            .sidebar-header { padding: 10px 16px; }
+            .sidebar-menu { display: flex; padding: 0; overflow-x: auto; }
+            .sidebar-menu li { flex: 1; }
+            .sidebar-menu li button { padding: 10px; justify-content: center; border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+            .sidebar-menu li button:hover, .sidebar-menu li button.active { border-left-color: transparent; border-bottom-color: var(--gold); }
+            .main-wrapper { order: 3; padding: 0 8px 20px; }
         }
 
         @media (max-width: 700px) {
@@ -522,9 +268,7 @@
             h1 { font-size: 1.05rem; }
             .subtitle { font-size: .75rem; line-height: 1.35; }
             .filter-controls { grid-template-columns: 1fr; }
-            .filter-controls .search-group,
-            .filter-controls select,
-            .filter-controls button { width: 100%; }
+            .filter-controls .search-group, .filter-controls select, .filter-controls button { width: 100%; }
             .column-header { font-size: .82rem; padding: 11px 8px; }
             .table-responsive { max-height: none; overflow: visible; }
             table, thead, tbody, tr, th, td { display: block; width: 100%; }
@@ -533,7 +277,6 @@
             tr.clickable-row td { display: grid; grid-template-columns: 42% 58%; gap: 6px; padding: 5px 0; border: 0; font-size: .78rem; word-break: break-word; }
             tr.clickable-row td::before { font-weight: 700; color: #607d8b; }
             
-            /* SPB Mobile Headers */
             .spb-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .spb-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Berangkat"; }
             .spb-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
@@ -542,7 +285,6 @@
             .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
             .spb-table tr.clickable-row td:nth-child(7)::before { content: "Aksi"; }
             
-            /* Bunker Mobile Headers */
             .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
             .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
@@ -557,14 +299,9 @@
 </head>
 <body>
 
-<!-- OFFICIAL HEADER -->
 <header class="official-header">
     <div class="official-header-inner">
-        <img
-            class="official-logo"
-            src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg"
-            alt="Logo Kementerian Perhubungan"
-        >
+        <img class="official-logo" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg" alt="Logo Kementerian Perhubungan">
         <div class="official-title">
             <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
             <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
@@ -573,20 +310,17 @@
     </div>
 </header>
 
-<!-- LEFT NAVIGATION SIDEBAR -->
 <nav class="sidebar">
     <div class="sidebar-header">
-        <button type="button" class="btn-login" id="openLoginModal">🔑 Log In Admin</button>
+        <button type="button" class="btn-login" id="openLoginModal">Log In Admin</button>
     </div>
     <ul class="sidebar-menu">
-        <li><button type="button" class="nav-btn active" data-target="bunker">🛢️ Tagihan Bunker</button></li>
-        <li><button type="button" class="nav-btn" data-target="spb">⚓ Tagihan SPB</button></li>
+        <li><button type="button" class="nav-btn active" data-target="bunker">Tagihan Bunker</button></li>
+        <li><button type="button" class="nav-btn" data-target="spb">Tagihan SPB</button></li>
     </ul>
 </nav>
 
-<!-- MAIN CONTENT CONTAINER -->
 <div class="main-wrapper">
-
     <div class="header-section">
         <h1>Dashboard Monitoring Tagihan</h1>
         <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis setiap 5 menit</div>
@@ -615,13 +349,11 @@
             <button type="button" id="resetFilter">Reset</button>
         </div>
         <div class="filter-info">
-            Filter dan pengurutan hanya berlaku pada browser pengguna yang sedang membuka halaman.
-            Data diperbarui otomatis setiap 5 menit.
+            Filter dan pengurutan hanya berlaku pada browser pengguna yang sedang membuka halaman. Data diperbarui otomatis setiap 5 menit.
         </div>
     </div>
 
     <div class="dashboard-grid">
-        <!-- BUNKER DATA -->
         <div class="column" id="col-bunker">
             <div class="column-header">DATA TAGIHAN BUNKER</div>
             <div class="table-responsive">
@@ -643,7 +375,6 @@
             </div>
         </div>
 
-        <!-- SPB DATA -->
         <div class="column tab-hidden" id="col-spb">
             <div class="column-header">DATA TAGIHAN SPB</div>
             <div class="table-responsive">
@@ -666,26 +397,25 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <!-- LOGIN MODAL POPUP -->
 <div class="modal-overlay" id="loginModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Login Sistem</h3>
+            <h3>Login Sistem Admin</h3>
             <button class="close-modal" id="closeLoginModal">&times;</button>
         </div>
         <form id="loginForm" onsubmit="event.preventDefault(); handleLoginSubmit();">
             <div class="form-group">
                 <label for="loginId">User ID / Username</label>
-                <input type="text" id="loginId" placeholder="Masukkan ID" required>
+                <input type="text" id="loginId" placeholder="Masukkan ID (Kolom B)" required>
             </div>
             <div class="form-group">
                 <label for="loginPass">Password</label>
-                <input type="password" id="loginPass" placeholder="Masukkan Password" required>
+                <input type="password" id="loginPass" placeholder="Masukkan Password (Kolom C)" required>
             </div>
-            <button type="submit" class="btn-submit-login">Masuk</button>
+            <button type="submit" class="btn-submit-login" id="btnSubmitLogin">Masuk</button>
         </form>
     </div>
 </div>
@@ -696,10 +426,11 @@
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
 
-// GOOGLE DRIVE CONFIGURATION
+// ACCOUNT SPREADSHEET CSV DATABASE URL
+const csvUrlAccounts = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=0&single=true&output=csv";
+
 const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
 const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
-
 const autoRefreshSeconds = 180;
 
 function parseCSV(text) {
@@ -740,12 +471,58 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// CHECK GOOGLE DRIVE & DOWNLOAD PDF
+// ACCOUNT VERIFICATION FROM SPREADSHEET
+async function verifyAccount(userId, password) {
+    try {
+        const response = await fetch(csvUrlAccounts);
+        const text = await response.text();
+        const rows = parseCSV(text);
+
+        // Column Index: Column B = Index 1 (ID), Column C = Index 2 (PASSWORD)
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const spreadsheetId = (row[1] || '').trim();
+            const spreadsheetPass = (row[2] || '').trim();
+
+            if (spreadsheetId === userId && spreadsheetPass === password) {
+                return true;
+            }
+        }
+        return false;
+    } catch (err) {
+        console.error("Gagal memeriksa akun dari spreadsheet:", err);
+        return false;
+    }
+}
+
+async function handleLoginSubmit() {
+    const idInput = document.getElementById("loginId").value.trim();
+    const passInput = document.getElementById("loginPass").value.trim();
+    const submitBtn = document.getElementById("btnSubmitLogin");
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Memeriksa...";
+
+    const isValid = await verifyAccount(idInput, passInput);
+
+    if (isValid) {
+        showToast("Login Berhasil! Mengalihkan ke Dashboard Admin...");
+        sessionStorage.setItem("adminLoggedIn", "true");
+        sessionStorage.setItem("adminUser", idInput);
+        setTimeout(() => {
+            window.location.href = "dashboard_admin.html";
+        }, 1200);
+    } else {
+        showToast("❌ User ID atau Password Salah!");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Masuk";
+    }
+}
+
 async function downloadPdf(billingCode) {
     if (!billingCode) return;
 
     showToast("Mencari berkas PDF...");
-
     if (!GDRIVE_API_KEY || GDRIVE_API_KEY.includes("YOUR_VALID_GOOGLE_DRIVE_API_KEY_HERE")) {
         showToast("⚠ Google Drive API Key belum disetting!");
         return;
@@ -759,7 +536,6 @@ async function downloadPdf(billingCode) {
         const data = await response.json();
 
         if (data.error) {
-            console.error("Drive API Error:", data.error);
             showToast("❌ API Error: " + (data.error.message || "Gagal terhubung"));
             return;
         }
@@ -773,7 +549,6 @@ async function downloadPdf(billingCode) {
             showToast(`⚠️ File PDF tidak ditemukan! (${billingCode})`);
         }
     } catch (err) {
-        console.error("Gagal terhubung ke Google Drive API:", err);
         showToast("❌ Gagal terhubung ke Google Drive API.");
     }
 }
@@ -785,7 +560,7 @@ async function loadTableData(url, tbodyId, type) {
         const text = await response.text();
         const rows = parseCSV(text);
 
-        if (rows.length > 0) rows.shift(); // remove header row
+        if (rows.length > 0) rows.shift();
 
         let html = '';
         let count = 1;
@@ -811,12 +586,7 @@ async function loadTableData(url, tbodyId, type) {
 
             if (type === 'spb') {
                 html += `
-                <tr class="clickable-row"
-                    data-billing="${escapeHtml(billingCode)}"
-                    data-date="${escapeHtml(dateVal)}"
-                    data-vessel="${escapeHtml(vesselName)}"
-                    data-agent="${escapeHtml(agentName)}"
-                    data-tipe="${escapeHtml(submissionType)}">
+                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}" data-tipe="${escapeHtml(submissionType)}">
                     <td>${count++}</td>
                     <td>${escapeHtml(dateVal)}</td>
                     <td><strong>${escapeHtml(vesselName)}</strong></td>
@@ -831,11 +601,7 @@ async function loadTableData(url, tbodyId, type) {
                 </tr>`;
             } else {
                 html += `
-                <tr class="clickable-row"
-                    data-billing="${escapeHtml(billingCode)}"
-                    data-date="${escapeHtml(dateVal)}"
-                    data-vessel="${escapeHtml(vesselName)}"
-                    data-agent="${escapeHtml(agentName)}">
+                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}">
                     <td>${count++}</td>
                     <td>${escapeHtml(dateVal)}</td>
                     <td><strong>${escapeHtml(vesselName)}</strong></td>
@@ -858,7 +624,6 @@ async function loadTableData(url, tbodyId, type) {
             attachRowClickEvents();
         }
     } catch (err) {
-        console.error("Failed to load data:", err);
         const colSpan = type === 'bunker' ? 6 : 7;
         tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data. Mohon refresh halaman.</td></tr>`;
     }
@@ -871,14 +636,12 @@ function attachRowClickEvents() {
             if (!billingCode) return;
             navigator.clipboard.writeText(billingCode).then(() => {
                 showToast("Berhasil Menyalin: " + billingCode);
-            }).catch(err => console.error("Gagal menyalin kode: ", err));
+            }).catch(err => console.error(err));
         };
     });
 }
 
-function normalize(value) {
-    return String(value || "").toLowerCase().trim();
-}
+function normalize(value) { return String(value || "").toLowerCase().trim(); }
 
 function parseDateVal(value) {
     const raw = String(value || "").trim();
@@ -899,12 +662,9 @@ function getSearchValue(row, field) {
 }
 
 function applyFilters() {
-    const globalFilter = document.getElementById("globalFilter");
-    const columnFilter = document.getElementById("columnFilter");
-    const dateSort = document.getElementById("dateSort");
-    const search = normalize(globalFilter.value);
-    const field = columnFilter.value;
-    const sort = dateSort.value;
+    const search = normalize(document.getElementById("globalFilter").value);
+    const field = document.getElementById("columnFilter").value;
+    const sort = document.getElementById("dateSort").value;
 
     document.querySelectorAll("table[data-section]").forEach(table => {
         const tbody = table.querySelector("tbody");
@@ -930,9 +690,7 @@ function applyFilters() {
 function executeSearch() {
     applyFilters();
     const globalFilter = document.getElementById("globalFilter");
-    if (globalFilter) {
-        globalFilter.blur(); // Automatically closes the mobile keyboard
-    }
+    if (globalFilter) globalFilter.blur();
 }
 
 function setupSidebarNavigation() {
@@ -964,17 +722,9 @@ function setupLoginModal() {
 
     openBtn.addEventListener("click", () => modal.classList.add("active"));
     closeBtn.addEventListener("click", () => modal.classList.remove("active"));
-    
     modal.addEventListener("click", (e) => {
         if (e.target === modal) modal.classList.remove("active");
     });
-}
-
-function handleLoginSubmit() {
-    const id = document.getElementById("loginId").value;
-    showToast(`Form submitted for ID: ${id}`);
-    document.getElementById("loginModal").classList.remove("active");
-    document.getElementById("loginForm").reset();
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -1005,6 +755,5 @@ document.addEventListener("DOMContentLoaded", function() {
     setTimeout(() => window.location.reload(), autoRefreshSeconds * 1000);
 });
 </script>
-
 </body>
 </html>
