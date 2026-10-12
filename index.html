@@ -25,18 +25,71 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            display: flex;
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: auto 1fr;
             min-height: 100vh;
+        }
+
+        /* --- OFFICIAL HEADER (DESKTOP GRID PLACEMENT) --- */
+        .official-header {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            width: 100%;
+            background: #fff;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            padding: 14px 16px 12px;
+        }
+
+        .official-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .official-logo {
+            width: 62px;
+            height: 72px;
+            object-fit: contain;
+            flex: 0 0 auto;
+        }
+
+        .official-title {
+            text-align: center;
+            line-height: 1.25;
+            color: #17324d;
+        }
+
+        .official-title .ministry {
+            font-size: .82rem;
+            font-weight: 700;
+            letter-spacing: .4px;
+        }
+
+        .official-title .office {
+            font-size: 1.18rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .official-title .location {
+            font-size: .88rem;
+            font-weight: 700;
+            margin-top: 2px;
         }
 
         /* --- LEFT NAVIGATION SIDEBAR --- */
         .sidebar {
-            width: var(--sidebar-width);
+            grid-column: 1 / 2;
+            grid-row: 1 / 3;
             background: var(--primary-dark);
             color: #fff;
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
             box-shadow: 2px 0 8px rgba(0,0,0,.15);
             z-index: 100;
         }
@@ -103,62 +156,16 @@
 
         /* --- MAIN CONTENT AREA --- */
         .main-wrapper {
-            flex: 1;
-            padding: 0 16px 24px;
-            overflow-x: hidden;
-        }
-
-        .official-header {
-            width: 100%;
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            padding: 18px 16px 24px;
             max-width: 1200px;
-            margin: 0 auto 18px;
-            background: #fff;
-            border-bottom: 4px solid var(--gold);
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            padding: 14px 16px 12px;
-        }
-
-        .official-header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-        }
-
-        .official-logo {
-            width: 62px;
-            height: 72px;
-            object-fit: contain;
-            flex: 0 0 auto;
-        }
-
-        .official-title {
-            text-align: center;
-            line-height: 1.25;
-            color: #17324d;
-        }
-
-        .official-title .ministry {
-            font-size: .82rem;
-            font-weight: 700;
-            letter-spacing: .4px;
-        }
-
-        .official-title .office {
-            font-size: 1.18rem;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .official-title .location {
-            font-size: .88rem;
-            font-weight: 700;
-            margin-top: 2px;
+            width: 100%;
+            margin: 0 auto;
         }
 
         .header-section {
             width: 100%;
-            max-width: 1200px;
             margin: 0 auto 16px;
             text-align: center;
         }
@@ -176,7 +183,6 @@
 
         .dashboard-grid {
             width: 100%;
-            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
@@ -211,8 +217,6 @@
             overflow-x: auto;
             border: 1px solid var(--border-color);
             border-top: 0;
-            max-height: none;
-            overflow-y: visible;
         }
 
         table {
@@ -271,7 +275,6 @@
 
         .filter-panel {
             width: 100%;
-            max-width: 1200px;
             margin: 0 auto 18px;
             background: #fff;
             border: 1px solid var(--border-color);
@@ -287,10 +290,37 @@
         }
         .filter-controls {
             display: grid;
-            grid-template-columns: minmax(180px, 1.5fr) minmax(150px, .9fr) minmax(150px, .9fr) auto;
+            grid-template-columns: minmax(200px, 1.5fr) minmax(150px, .9fr) minmax(150px, .9fr) auto;
             gap: 8px;
         }
-        .filter-controls input,
+        .search-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .search-group input {
+            flex: 1;
+            min-height: 40px;
+            border: 1px solid #cfd8df;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font: inherit;
+            font-size: .82rem;
+        }
+        .search-group button {
+            min-height: 40px;
+            background: var(--primary);
+            color: #fff;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            padding: 8px 14px;
+            font-size: .82rem;
+            white-space: nowrap;
+        }
+        .search-group button:hover { background: var(--primary-dark); }
+
         .filter-controls select,
         .filter-controls button {
             min-height: 40px;
@@ -300,15 +330,15 @@
             font: inherit;
             font-size: .82rem;
         }
-        .filter-controls button {
-            background: var(--primary);
+        .filter-controls button#resetFilter {
+            background: #607d8b;
             color: #fff;
             border: 0;
             cursor: pointer;
             font-weight: 700;
             padding: 8px 16px;
         }
-        .filter-controls button:hover { background: var(--primary-dark); }
+        .filter-controls button#resetFilter:hover { background: #455a64; }
         .filter-info {
             margin-top: 8px;
             color: var(--muted);
@@ -442,9 +472,14 @@
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
             body {
+                display: flex;
                 flex-direction: column;
             }
+            .official-header {
+                order: 1;
+            }
             .sidebar {
+                order: 2;
                 width: 100%;
             }
             .sidebar-header {
@@ -470,21 +505,26 @@
                 border-left-color: transparent;
                 border-bottom-color: var(--gold);
             }
+            .main-wrapper {
+                order: 3;
+                padding: 0 8px 20px;
+            }
         }
 
         @media (max-width: 700px) {
-            .main-wrapper { padding: 0 8px 20px; }
-            .official-header { margin-bottom: 14px; padding: 12px 8px 10px; }
+            .official-header { margin-bottom: 0; padding: 12px 8px 10px; }
             .official-header-inner { gap: 9px; }
             .official-logo { width: 48px; height: 58px; }
             .official-title .ministry { font-size: .65rem; }
             .official-title .office { font-size: .88rem; }
             .official-title .location { font-size: .68rem; }
-            .header-section { margin-bottom: 12px; }
+            .header-section { margin-bottom: 12px; margin-top: 12px; }
             h1 { font-size: 1.05rem; }
             .subtitle { font-size: .75rem; line-height: 1.35; }
             .filter-controls { grid-template-columns: 1fr; }
-            .filter-controls input, .filter-controls select, .filter-controls button { width: 100%; }
+            .filter-controls .search-group,
+            .filter-controls select,
+            .filter-controls button { width: 100%; }
             .column-header { font-size: .82rem; padding: 11px 8px; }
             .table-responsive { max-height: none; overflow: visible; }
             table, thead, tbody, tr, th, td { display: block; width: 100%; }
@@ -493,7 +533,7 @@
             tr.clickable-row td { display: grid; grid-template-columns: 42% 58%; gap: 6px; padding: 5px 0; border: 0; font-size: .78rem; word-break: break-word; }
             tr.clickable-row td::before { font-weight: 700; color: #607d8b; }
             
-            /* SPB Mobile Headers (Includes Tipe Pengajuan) */
+            /* SPB Mobile Headers */
             .spb-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .spb-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Berangkat"; }
             .spb-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
@@ -502,7 +542,7 @@
             .spb-table tr.clickable-row td:nth-child(6)::before { content: "Kode Billing"; }
             .spb-table tr.clickable-row td:nth-child(7)::before { content: "Aksi"; }
             
-            /* Bunker Mobile Headers (Tipe Pengajuan Excluded) */
+            /* Bunker Mobile Headers */
             .bunker-table tr.clickable-row td:nth-child(1)::before { content: "No"; }
             .bunker-table tr.clickable-row td:nth-child(2)::before { content: "Tanggal Kegiatan"; }
             .bunker-table tr.clickable-row td:nth-child(3)::before { content: "Nama Kapal"; }
@@ -516,6 +556,22 @@
     </style>
 </head>
 <body>
+
+<!-- OFFICIAL HEADER -->
+<header class="official-header">
+    <div class="official-header-inner">
+        <img
+            class="official-logo"
+            src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg"
+            alt="Logo Kementerian Perhubungan"
+        >
+        <div class="official-title">
+            <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
+            <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
+            <div class="location">KELAS III LABUAN BAJO</div>
+        </div>
+    </div>
+</header>
 
 <!-- LEFT NAVIGATION SIDEBAR -->
 <nav class="sidebar">
@@ -531,21 +587,6 @@
 <!-- MAIN CONTENT CONTAINER -->
 <div class="main-wrapper">
 
-    <header class="official-header">
-        <div class="official-header-inner">
-            <img
-                class="official-logo"
-                src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg"
-                alt="Logo Kementerian Perhubungan"
-            >
-            <div class="official-title">
-                <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
-                <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
-                <div class="location">KELAS III LABUAN BAJO</div>
-            </div>
-        </div>
-    </header>
-
     <div class="header-section">
         <h1>Dashboard Monitoring Tagihan</h1>
         <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis setiap 5 menit</div>
@@ -554,7 +595,10 @@
     <div class="filter-panel">
         <div class="filter-title">🔎 Filter &amp; Urutkan Data</div>
         <div class="filter-controls">
-            <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
+            <div class="search-group">
+                <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
+                <button type="button" id="btnFind">Cari</button>
+            </div>
             <select id="columnFilter">
                 <option value="all">Cari di: Semua Kolom</option>
                 <option value="date">Tanggal</option>
@@ -577,7 +621,7 @@
     </div>
 
     <div class="dashboard-grid">
-        <!-- BUNKER DATA (No Tipe Pengajuan) -->
+        <!-- BUNKER DATA -->
         <div class="column" id="col-bunker">
             <div class="column-header">DATA TAGIHAN BUNKER</div>
             <div class="table-responsive">
@@ -599,7 +643,7 @@
             </div>
         </div>
 
-        <!-- SPB DATA (Keeps Tipe Pengajuan) -->
+        <!-- SPB DATA -->
         <div class="column tab-hidden" id="col-spb">
             <div class="column-header">DATA TAGIHAN SPB</div>
             <div class="table-responsive">
@@ -883,6 +927,14 @@ function applyFilters() {
     });
 }
 
+function executeSearch() {
+    applyFilters();
+    const globalFilter = document.getElementById("globalFilter");
+    if (globalFilter) {
+        globalFilter.blur(); // Automatically closes the mobile keyboard
+    }
+}
+
 function setupSidebarNavigation() {
     const navButtons = document.querySelectorAll(".nav-btn");
     const colSpb = document.getElementById("col-spb");
@@ -933,6 +985,14 @@ document.addEventListener("DOMContentLoaded", function() {
     setupLoginModal();
 
     document.getElementById("globalFilter").addEventListener("input", applyFilters);
+    document.getElementById("btnFind").addEventListener("click", executeSearch);
+    document.getElementById("globalFilter").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            executeSearch();
+        }
+    });
+
     document.getElementById("columnFilter").addEventListener("change", applyFilters);
     document.getElementById("dateSort").addEventListener("change", applyFilters);
     document.getElementById("resetFilter").addEventListener("click", () => {
