@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.7">
-    <title>Monitoring Tagihan Belum Lunas (BUNKER & SPB)</title>
+    <title>Monitoring Tagihan Belum Lunas (BUNKER & SPB) - Publik</title>
     <style>
         :root {
             --bg-color: #f3f6f9;
@@ -82,23 +82,26 @@
             padding: 16px;
             background: rgba(0,0,0,0.15);
             border-bottom: 3px solid var(--gold);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .btn-login {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: var(--gold);
             color: #17324d;
             border: none;
             border-radius: 6px;
             font-weight: 700;
-            font-size: .9rem;
+            font-size: .85rem;
             cursor: pointer;
             transition: background 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             text-transform: uppercase;
             letter-spacing: .5px;
         }
@@ -249,7 +252,8 @@
             body { display: flex; flex-direction: column; }
             .official-header { order: 1; }
             .sidebar { order: 2; width: 100%; }
-            .sidebar-header { padding: 10px 16px; }
+            .sidebar-header { padding: 10px 16px; flex-direction: row; }
+            .btn-login { flex: 1; }
             .sidebar-menu { display: flex; padding: 0; overflow-x: auto; }
             .sidebar-menu li { flex: 1; }
             .sidebar-menu li button { padding: 10px; justify-content: center; border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
@@ -312,7 +316,8 @@
 
 <nav class="sidebar">
     <div class="sidebar-header">
-        <button type="button" class="btn-login" id="openLoginModal">Log In Admin</button>
+        <button type="button" class="btn-login" id="openAdminLoginModal">🔐 Login Admin</button>
+        <button type="button" class="btn-login" id="openUserLoginModal" style="background: #27ae60; color: #fff;">👤 Login User</button>
     </div>
     <ul class="sidebar-menu">
         <li><button type="button" class="nav-btn active" data-target="bunker">Tagihan Bunker</button></li>
@@ -322,7 +327,7 @@
 
 <div class="main-wrapper">
     <div class="header-section">
-        <h1>Dashboard Monitoring Tagihan</h1>
+        <h1>Dashboard Monitoring Tagihan Publik</h1>
         <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis setiap 5 menit</div>
     </div>
 
@@ -403,17 +408,18 @@
 <div class="modal-overlay" id="loginModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Login Sistem Admin</h3>
+            <h3 id="modalTitle">Login Sistem</h3>
             <button class="close-modal" id="closeLoginModal">&times;</button>
         </div>
         <form id="loginForm" onsubmit="event.preventDefault(); handleLoginSubmit();">
+            <input type="hidden" id="loginRole" value="admin">
             <div class="form-group">
-                <label for="loginId">User ID / Username</label>
-                <input type="text" id="loginId" placeholder="Masukkan ID (Kolom B)" required>
+                <label for="loginId" id="labelUserId">User ID / Username</label>
+                <input type="text" id="loginId" placeholder="Masukkan ID" required>
             </div>
             <div class="form-group">
                 <label for="loginPass">Password</label>
-                <input type="password" id="loginPass" placeholder="Masukkan Password (Kolom C)" required>
+                <input type="password" id="loginPass" placeholder="Masukkan Password" required>
             </div>
             <button type="submit" class="btn-submit-login" id="btnSubmitLogin">Masuk</button>
         </form>
@@ -426,8 +432,10 @@
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
 
-// ACCOUNT SPREADSHEET CSV DATABASE URL
-const csvUrlAccounts = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=0&single=true&output=csv";
+// ACCOUNTS CSV SPREADSHEET (Published Web URLs)
+// ADMIN DB (gid=84861723) & USER DB (gid=0) published URLs respectively or combined via logic if shared structure
+const csvUrlAdminAccounts = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=84861723&single=true&output=csv";
+const csvUrlUserAccounts  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=0&single=true&output=csv";
 
 const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
 const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
@@ -471,14 +479,12 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-// ACCOUNT VERIFICATION FROM SPREADSHEET
-async function verifyAccount(userId, password) {
+async function verifyAccount(csvUrl, userId, password) {
     try {
-        const response = await fetch(csvUrlAccounts);
+        const response = await fetch(csvUrl);
         const text = await response.text();
         const rows = parseCSV(text);
 
-        // Column Index: Column B = Index 1 (ID), Column C = Index 2 (PASSWORD)
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             const spreadsheetId = (row[1] || '').trim();
@@ -490,12 +496,13 @@ async function verifyAccount(userId, password) {
         }
         return false;
     } catch (err) {
-        console.error("Gagal memeriksa akun dari spreadsheet:", err);
+        console.error("Gagal memeriksa akun:", err);
         return false;
     }
 }
 
 async function handleLoginSubmit() {
+    const role = document.getElementById("loginRole").value;
     const idInput = document.getElementById("loginId").value.trim();
     const passInput = document.getElementById("loginPass").value.trim();
     const submitBtn = document.getElementById("btnSubmitLogin");
@@ -503,14 +510,28 @@ async function handleLoginSubmit() {
     submitBtn.disabled = true;
     submitBtn.textContent = "Memeriksa...";
 
-    const isValid = await verifyAccount(idInput, passInput);
+    let isValid = false;
+    let targetUrl = "";
+
+    if (role === "admin") {
+        isValid = await verifyAccount(csvUrlAdminAccounts, idInput, passInput);
+        targetUrl = "dashboard_admin.html";
+    } else {
+        isValid = await verifyAccount(csvUrlUserAccounts, idInput, passInput);
+        targetUrl = "dashboard_user.html";
+    }
 
     if (isValid) {
-        showToast("Login Berhasil! Mengalihkan ke Dashboard Admin...");
-        sessionStorage.setItem("adminLoggedIn", "true");
-        sessionStorage.setItem("adminUser", idInput);
+        showToast("Login Berhasil! Mengalihkan...");
+        if (role === "admin") {
+            sessionStorage.setItem("adminLoggedIn", "true");
+            sessionStorage.setItem("adminUser", idInput);
+        } else {
+            sessionStorage.setItem("userLoggedIn", "true");
+            sessionStorage.setItem("regularUser", idInput);
+        }
         setTimeout(() => {
-            window.location.href = "dashboard_admin.html";
+            window.location.href = targetUrl;
         }, 1200);
     } else {
         showToast("❌ User ID atau Password Salah!");
@@ -717,10 +738,27 @@ function setupSidebarNavigation() {
 
 function setupLoginModal() {
     const modal = document.getElementById("loginModal");
-    const openBtn = document.getElementById("openLoginModal");
+    const openAdminBtn = document.getElementById("openAdminLoginModal");
+    const openUserBtn = document.getElementById("openUserLoginModal");
     const closeBtn = document.getElementById("closeLoginModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const loginRole = document.getElementById("loginRole");
+    const submitBtn = document.getElementById("btnSubmitLogin");
 
-    openBtn.addEventListener("click", () => modal.classList.add("active"));
+    openAdminBtn.addEventListener("click", () => {
+        modalTitle.textContent = "Login Sistem Admin";
+        loginRole.value = "admin";
+        submitBtn.style.background = "#005baa";
+        modal.classList.add("active");
+    });
+
+    openUserBtn.addEventListener("click", () => {
+        modalTitle.textContent = "Login Sistem User";
+        loginRole.value = "user";
+        submitBtn.style.background = "#27ae60";
+        modal.classList.add("active");
+    });
+
     closeBtn.addEventListener("click", () => modal.classList.remove("active"));
     modal.addEventListener("click", (e) => {
         if (e.target === modal) modal.classList.remove("active");
