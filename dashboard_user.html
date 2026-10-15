@@ -177,7 +177,6 @@
         .filter-controls select, .filter-controls button { min-height: 40px; border: 1px solid #cfd8df; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: .82rem; }
         .filter-controls button#resetFilter { background: #607d8b; color: #fff; border: 0; cursor: pointer; font-weight: 700; padding: 8px 16px; }
         .filter-controls button#resetFilter:hover { background: #455a64; }
-        .filter-info { margin-top: 8px; color: var(--muted); font-size: .74rem; line-height: 1.35; }
         .hidden-row { display: none !important; }
 
         #toast {
@@ -188,19 +187,10 @@
         }
         #toast.show { visibility: visible; animation: fadein .3s, fadeout .3s 2.7s; }
 
-        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 20px; opacity: 1; } }
-        @keyframes fadeout { from { bottom: 20px; opacity: 1; } to { bottom: 0; opacity: 0; } }
-
         @media (max-width: 768px) {
             body { display: flex; flex-direction: column; }
             .official-header { order: 1; }
             .sidebar { order: 2; width: 100%; }
-            .sidebar-header { padding: 10px 16px; }
-            .sidebar-menu { display: flex; padding: 0; overflow-x: auto; }
-            .sidebar-menu li { flex: 1; }
-            .sidebar-menu li button { padding: 10px; justify-content: center; border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
-            .sidebar-menu li button:hover, .sidebar-menu li button.active { border-left-color: transparent; border-bottom-color: var(--gold); }
-            .main-wrapper { order: 3; padding: 0 8px 20px; }
         }
     </style>
 </head>
@@ -208,7 +198,7 @@
 
 <header class="official-header">
     <div class="official-header-inner">
-        <img class="official-logo" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg" alt="Logo Kementerian Perhubungan">
+        <img class="official-logo" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_of_the_Ministry_of_Transportation_of_the_Republic_of_Indonesia.svg" alt="Logo">
         <div class="official-title">
             <div class="ministry">KEMENTERIAN PERHUBUNGAN</div>
             <div class="office">KANTOR KESYAHBANDARAN DAN OTORITAS PELABUHAN</div>
@@ -219,7 +209,7 @@
 
 <nav class="sidebar">
     <div class="sidebar-header">
-        <span class="user-badge" id="currentUserDisplay">👤 User: Pemohon</span>
+        <span class="user-badge" id="currentUserDisplay">👤 User</span>
         <button type="button" class="btn-logout" id="btnLogout">🔒 Keluar / Logout</button>
     </div>
     <ul class="sidebar-menu">
@@ -230,29 +220,22 @@
 
 <div class="main-wrapper">
     <div class="header-section">
-        <h1>Dashboard Monitoring Tagihan <span class="user-tag">USER PORTAL</span></h1>
-        <div class="subtitle">Data sumber: USER DB (Sheet ID: <code>1S_tkQbj3y_UnU8pgmJsH9stDugmebDlbWgIm5MUvPJw</code>, gid=0)</div>
+        <h1>Dashboard Monitoring Tagihan <span class="user-tag">USER DB</span></h1>
+        <div class="subtitle">Sumber Data: USER DB (gid=84861723)</div>
     </div>
 
     <div class="filter-panel">
         <div class="filter-title">🔎 Filter &amp; Urutkan Data</div>
         <div class="filter-controls">
             <div class="search-group">
-                <input type="search" id="globalFilter" placeholder="Cari kapal, agen/pemohon, kode billing...">
+                <input type="search" id="globalFilter" placeholder="Cari data...">
                 <button type="button" id="btnFind">Cari</button>
             </div>
             <select id="columnFilter">
-                <option value="all">Cari di: Semua Kolom</option>
-                <option value="date">Tanggal</option>
-                <option value="vessel">Nama Kapal</option>
-                <option value="agent">Agen / Pemilik / Pemohon</option>
-                <option value="tipe">Tipe Pengajuan (Khusus SPB)</option>
-                <option value="billing">Kode Billing</option>
+                <option value="all">Semua Kolom</option>
             </select>
             <select id="dateSort">
-                <option value="none">Urutan Tanggal: Default</option>
-                <option value="newest">Terbaru → Terlama</option>
-                <option value="oldest">Terlama → Terbaru</option>
+                <option value="none">Urutan Default</option>
             </select>
             <button type="button" id="resetFilter">Reset</button>
         </div>
@@ -265,16 +248,11 @@
                 <table class="bunker-table" data-section="bunker">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal Kegiatan</th>
-                            <th>Nama Kapal</th>
-                            <th>Pemohon / No.HP</th>
-                            <th>Kode Billing</th>
-                            <th>Aksi</th>
+                            <th>No</th><th>Tanggal Kegiatan</th><th>Nama Kapal</th><th>Pemohon / No.HP</th><th>Kode Billing</th><th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="bunkerTbody">
-                        <tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data USER DB Bunker...</td></tr>
+                        <tr><td colspan="6" style="text-align: center; padding: 20px;">Memuat data USER DB...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -286,17 +264,11 @@
                 <table class="spb-table" data-section="spb">
                     <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Tanggal Berangkat</th>
-                            <th>Nama Kapal</th>
-                            <th>Agen / Pemilik</th>
-                            <th>Tipe Pengajuan</th>
-                            <th>Kode Billing</th>
-                            <th>Aksi</th>
+                            <th>No</th><th>Tanggal Berangkat</th><th>Nama Kapal</th><th>Agen / Pemilik</th><th>Tipe Pengajuan</th><th>Kode Billing</th><th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="spbTbody">
-                        <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data USER DB SPB...</td></tr>
+                        <tr><td colspan="7" style="text-align: center; padding: 20px;">Memuat data USER DB...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -307,19 +279,17 @@
 <div id="toast">Kode Billing disalin!</div>
 
 <script>
-// USER SESSION GUARD
 if (sessionStorage.getItem("userLoggedIn") !== "true") {
     alert("Akses User ditolak! Silakan login melalui halaman utama.");
     window.location.href = "index.html";
 }
 
-// Data URLs linked to USER DB: gid=0 (or replace with your specific published CSV endpoints for user db if separate)
-const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
-const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
+// USER DB CSV Link (gid=84861723)
+const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=84861723&single=true&output=csv";
+const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=84861723&single=true&output=csv";
 
 const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
 const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
-const autoRefreshSeconds = 180;
 
 function parseCSV(text) {
     const lines = text.split(/\r\n|\n/);
@@ -331,14 +301,9 @@ function parseCSV(text) {
         let entry = '';
         for (let j = 0; j < lines[i].length; j++) {
             const char = lines[i][j];
-            if (char === '"') {
-                insideQuote = !insideQuote;
-            } else if (char === ',' && !insideQuote) {
-                row.push(entry.trim().replace(/^"|"$/g, ''));
-                entry = '';
-            } else {
-                entry += char;
-            }
+            if (char === '"') insideQuote = !insideQuote;
+            else if (char === ',' && !insideQuote) { row.push(entry.trim().replace(/^"|"$/g, '')); entry = ''; }
+            else entry += char;
         }
         row.push(entry.trim().replace(/^"|"$/g, ''));
         result.push(row);
@@ -361,22 +326,18 @@ function showToast(message) {
 
 async function downloadPdf(billingCode) {
     if (!billingCode) return;
-    showToast("Mencari berkas PDF...");
     const query = `'${GDRIVE_FOLDER_ID}' in parents and name contains '${billingCode}' and trashed = false`;
     const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)&key=${GDRIVE_API_KEY}`;
-
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
         if (data.files && data.files.length > 0) {
-            const targetFile = data.files[0];
-            window.open(`https://drive.google.com/file/d/${targetFile.id}/view?usp=sharing`, '_blank');
-            showToast(`Membuka berkas ${targetFile.name}...`);
+            window.open(`https://drive.google.com/file/d/${data.files[0].id}/view?usp=sharing`, '_blank');
         } else {
-            showToast(`⚠️ File PDF tidak ditemukan! (${billingCode})`);
+            showToast("⚠️ File PDF tidak ditemukan!");
         }
     } catch (err) {
-        showToast("❌ Gagal terhubung ke Google Drive API.");
+        showToast("❌ Gagal terhubung ke Google Drive.");
     }
 }
 
@@ -390,49 +351,29 @@ async function loadTableData(url, tbodyId, type) {
 
         let html = '';
         let count = 1;
-
         rows.forEach(row => {
-            let vesselName, dateVal, agentName, billingCode, submissionType;
-            if (type === 'spb') {
-                vesselName = row[1] || ''; dateVal = row[5] || ''; agentName = row[8] || ''; billingCode = row[9] || ''; submissionType = row[10] || '';
-            } else {
-                vesselName = row[1] || ''; agentName = row[7] || ''; dateVal = row[8] || ''; billingCode = row[9] || ''; submissionType = row[10] || '';
-            }
-            if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
+            const vesselName = row[1] || '';
+            const billingCode = row[9] || '';
+            const dateVal = row[8] || '';
+            const agentName = row[7] || '';
+            if (!vesselName || !billingCode) return;
 
-            if (type === 'spb') {
-                html += `
-                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}" data-tipe="${escapeHtml(submissionType)}">
-                    <td>${count++}</td><td>${escapeHtml(dateVal)}</td><td><strong>${escapeHtml(vesselName)}</strong></td><td>${escapeHtml(agentName)}</td><td>${escapeHtml(submissionType)}</td><td><code>${escapeHtml(billingCode)}</code></td>
-                    <td><button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">📄 Unduh PDF</button></td>
-                </tr>`;
-            } else {
-                html += `
-                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}">
-                    <td>${count++}</td><td>${escapeHtml(dateVal)}</td><td><strong>${escapeHtml(vesselName)}</strong></td><td>${escapeHtml(agentName)}</td><td><code>${escapeHtml(billingCode)}</code></td>
-                    <td><button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">📄 Unduh PDF</button></td>
-                </tr>`;
-            }
+            html += `
+            <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}">
+                <td>${count++}</td><td>${escapeHtml(dateVal)}</td><td><strong>${escapeHtml(vesselName)}</strong></td><td>${escapeHtml(agentName)}</td><td><code>${escapeHtml(billingCode)}</code></td>
+                <td><button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">📄 PDF</button></td>
+            </tr>`;
         });
-        tbody.innerHTML = count === 1 ? `<tr><td colspan="7" style="text-align: center; padding: 20px;">Tidak ada data User.</td></tr>` : html;
-        document.querySelectorAll(".clickable-row").forEach(row => {
-            row.onclick = function() {
-                navigator.clipboard.writeText(this.getAttribute("data-billing")).then(() => showToast("Disalin: " + this.getAttribute("data-billing")));
+        tbody.innerHTML = html || `<tr><td colspan="6" style="text-align:center; padding:20px;">Tidak ada data.</td></tr>`;
+        document.querySelectorAll(".clickable-row").forEach(r => {
+            r.onclick = () => {
+                navigator.clipboard.writeText(r.getAttribute("data-billing"));
+                showToast("Disalin: " + r.getAttribute("data-billing"));
             };
         });
     } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data user.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center; padding:20px;">Gagal memuat data User.</td></tr>`;
     }
-}
-
-function applyFilters() {
-    const search = String(document.getElementById("globalFilter").value || "").toLowerCase().trim();
-    document.querySelectorAll("table[data-section]").forEach(table => {
-        table.querySelectorAll("tbody tr.clickable-row").forEach(row => {
-            const val = row.innerText.toLowerCase();
-            row.classList.toggle("hidden-row", Boolean(search) && !val.includes(search));
-        });
-    });
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -442,27 +383,25 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "index.html";
     });
 
-    loadTableData(csvUrlSPB, "spbTbody", "spb");
     loadTableData(csvUrlBunker, "bunkerTbody", "bunker");
+    loadTableData(csvUrlSPB, "spbTbody", "spb");
 
     document.querySelectorAll(".nav-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
-            const target = btn.getAttribute("data-target");
-            document.getElementById("col-bunker").classList.toggle("tab-hidden", target !== "bunker");
-            document.getElementById("col-spb").classList.toggle("tab-hidden", target !== "spb");
+            const t = btn.getAttribute("data-target");
+            document.getElementById("col-bunker").classList.toggle("tab-hidden", t !== "bunker");
+            document.getElementById("col-spb").classList.toggle("tab-hidden", t !== "spb");
         });
     });
 
-    document.getElementById("globalFilter").addEventListener("input", applyFilters);
-    document.getElementById("btnFind").addEventListener("click", applyFilters);
-    document.getElementById("resetFilter").addEventListener("click", () => {
-        document.getElementById("globalFilter").value = "";
-        document.querySelectorAll(".clickable-row").forEach(r => r.classList.remove("hidden-row"));
+    document.getElementById("globalFilter").addEventListener("input", (e) => {
+        const val = e.target.value.toLowerCase();
+        document.querySelectorAll(".clickable-row").forEach(r => {
+            r.classList.toggle("hidden-row", !r.innerText.toLowerCase().includes(val));
+        });
     });
-
-    setTimeout(() => window.location.reload(), autoRefreshSeconds * 1000);
 });
 </script>
 </body>
