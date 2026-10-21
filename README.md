@@ -1,8 +1,7 @@
 # Testerbillingproject
 
-THIS IS A TEST WEB PAGE BEFORE BEING UPLOAD TO THE MAIN BILLING PROJECT
+This is a test web page before being upload to the main billing project
 
-THIS PROJECT PURPOSE ARE TO THE TEST AND A DEVELOPING WEB PAGE FOR BILLING MONITORING ON KANTOR KESYAHBANDAR DAN OTORITAS PELABUHAN KELAS III LABUAN BAJO.
+This project purpose to test and a developing web page for billing monitoring on KANTOR KESYAHBANDAR DAN OTORITAS PELABUHAN KELAS III LABUAN BAJO.
 
-THIS REPOSITOR CODE MIGHT BE NOT WORKING PROPERLY AND SHOW AN ERROR, PLEASE INFORM THE REPOSITORY ADMINISTRATOR FOR A FIX AND FUTHER DEVELOPMENT REQUEST.
-
+This repositor code might be not working properly and show an error, please inform the repository administrator for a fix and futher development request.
