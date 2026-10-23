@@ -1,0 +1,174 @@
+<script>
+const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
+const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
+
+const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
+const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
+const autoRefreshSeconds = 180;
+
+function checkAuth() {
+    const isAdminLoggedIn = sessionStorage.getItem("adminLoggedIn");
+    const adminUser = sessionStorage.getItem("adminUser");
+    if (!isAdminLoggedIn || isAdminLoggedIn !== "true") {
+        alert("Akses ditolak! Anda harus login sebagai Admin.");
+        window.location.href = "index.html";
+        return;
+    }
+    if (adminUser) {
+        document.getElementById("adminDisplayInfo").textContent = "🔑 Admin: " + adminUser;
+    }
+}
+
+function parseCSV(text) {
+    const lines = text.split(/\r\n|\n/);
+    const result = [];
+    for (let i = 0; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let j = 0; j < lines[i].length; j++) {
+            const char = lines[i][j];
+            if (char === '"') {
+                insideQuote = !insideQuote;
+            } else if (char === ',' && !insideQuote) {
+                row.push(entry.trim().replace(/^"|"$/g, ''));
+                entry = '';
+            } else {
+                entry += char;
+            }
+        }
+        row.push(entry.trim().replace(/^"|"$/g, ''));
+        result.push(row);
+    }
+    return result;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text || '';
+    return div.innerHTML;
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+async function downloadPdf(billingCode) {
+    if (!billingCode) return;
+    showToast("Mencari berkas PDF...");
+    const query = `'${GDRIVE_FOLDER_ID}' in parents and name contains '${billingCode}' and trashed = false`;
+    const apiUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)&key=${GDRIVE_API_KEY}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (data.files && data.files.length > 0) {
+            const targetFile = data.files[0];
+            window.open(`https://drive.google.com/file/d/${targetFile.id}/view?usp=sharing`, '_blank');
+            showToast(`Membuka berkas ${targetFile.name}...`);
+        } else {
+            showToast(`⚠️ File PDF tidak ditemukan! (${billingCode})`);
+        }
+    } catch (err) {
+        showToast("❌ Gagal terhubung ke Google Drive API.");
+    }
+}
+
+async function loadTableData(url, tbodyId, type) {
+    const tbody = document.getElementById(tbodyId);
+    try {
+        const response = await fetch(url);
+        const text = await response.text();
+        const rows = parseCSV(text);
+        if (rows.length > 0) rows.shift();
+
+        let html = '';
+        let count = 1;
+
+        rows.forEach(row => {
+            let vesselName, dateVal, agentName, billingCode, submissionType;
+            if (type === 'spb') {
+                vesselName = row[1] || ''; dateVal = row[5] || ''; agentName = row[8] || ''; billingCode = row[9] || ''; submissionType = row[10] || '';
+            } else {
+                vesselName = row[1] || ''; agentName = row[7] || ''; dateVal = row[8] || ''; billingCode = row[9] || ''; submissionType = row[10] || '';
+            }
+            if (!vesselName || !billingCode || vesselName.toUpperCase() === "NAMA KAPAL") return;
+
+            if (type === 'spb') {
+                html += `
+                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}" data-tipe="${escapeHtml(submissionType)}">
+                    <td>${count++}</td><td>${escapeHtml(dateVal)}</td><td><strong>${escapeHtml(vesselName)}</strong></td><td>${escapeHtml(agentName)}</td><td>${escapeHtml(submissionType)}</td><td><code>${escapeHtml(billingCode)}</code></td>
+                    <td><button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">📄 Unduh PDF</button></td>
+                </tr>`;
+            } else {
+                html += `
+                <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}">
+                    <td>${count++}</td><td>${escapeHtml(dateVal)}</td><td><strong>${escapeHtml(vesselName)}</strong></td><td>${escapeHtml(agentName)}</td><td><code>${escapeHtml(billingCode)}</code></td>
+                    <td><button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">📄 Unduh PDF</button></td>
+                </tr>`;
+            }
+        });
+        tbody.innerHTML = count === 1 ? `<tr><td colspan="7" style="text-align: center; padding: 20px;">Tidak ada data.</td></tr>` : html;
+        
+        document.querySelectorAll(".clickable-row").forEach(row => {
+            row.onclick = function() {
+                navigator.clipboard.writeText(this.getAttribute("data-billing")).then(() => showToast("Disalin: " + this.getAttribute("data-billing")));
+            };
+        });
+        applyFilters();
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data.</td></tr>`;
+    }
+}
+
+function applyFilters() {
+    const search = String(document.getElementById("globalFilter").value || "").toLowerCase().trim();
+    document.querySelectorAll("table[data-section]").forEach(table => {
+        table.querySelectorAll("tbody tr.clickable-row").forEach(row => {
+            const val = row.innerText.toLowerCase();
+            row.classList.toggle("hidden-row", Boolean(search) && !val.includes(search));
+        });
+    });
+}
+
+function refreshAllData() {
+    loadTableData(csvUrlSPB, "spbTbody", "spb");
+    loadTableData(csvUrlBunker, "bunkerTbody", "bunker");
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    checkAuth();
+
+    refreshAllData();
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            const target = btn.getAttribute("data-target");
+            document.getElementById("col-bunker").classList.toggle("tab-hidden", target !== "bunker");
+            document.getElementById("col-spb").classList.toggle("tab-hidden", target !== "spb");
+        });
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", function() {
+        sessionStorage.removeItem("adminLoggedIn");
+        sessionStorage.removeItem("adminUser");
+        window.location.href = "index.html";
+    });
+
+    document.getElementById("globalFilter").addEventListener("input", applyFilters);
+    document.getElementById("btnFind").addEventListener("click", applyFilters);
+    document.getElementById("resetFilter").addEventListener("click", () => {
+        document.getElementById("globalFilter").value = "";
+        document.querySelectorAll(".clickable-row").forEach(r => r.classList.remove("hidden-row"));
+    });
+
+    // Refresh data tabel secara berkala tanpa reload halaman penuh
+    setInterval(refreshAllData, autoRefreshSeconds * 1000);
+});
+</script>
