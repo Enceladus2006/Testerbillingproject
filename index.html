@@ -219,7 +219,6 @@
         .filter-controls select, .filter-controls button { min-height: 40px; border: 1px solid #cfd8df; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: .82rem; }
         .filter-controls button#resetFilter { background: #607d8b; color: #fff; border: 0; cursor: pointer; font-weight: 700; padding: 8px 16px; }
         .filter-controls button#resetFilter:hover { background: #455a64; }
-        .filter-info { margin-top: 8px; color: var(--muted); font-size: .74rem; line-height: 1.35; }
         .hidden-row { display: none !important; }
 
         #toast {
@@ -289,7 +288,7 @@
 <div class="main-wrapper">
     <div class="header-section">
         <h1>Dashboard Monitoring Tagihan Publik</h1>
-        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis setiap 5 menit</div>
+        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis setiap 3 menit</div>
     </div>
 
     <div class="filter-panel">
@@ -390,7 +389,6 @@
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
 
-// UPDATED PUBLISH LINKS FOR ADMIN DB (gid=0) AND USER DB (gid=84861723)
 const csvUrlAdminAccounts = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=0&single=true&output=csv";
 const csvUrlUserAccounts  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJMja5A8dWzcAMomGByVDbA1QrLmnKnM4zb9e0fqm1cvofBng6yDoP5fYSUorfk4bIxdJ7WiluWdsv/pub?gid=84861723&single=true&output=csv";
 
@@ -553,11 +551,13 @@ async function loadTableData(url, tbodyId, type) {
             }
         });
         tbody.innerHTML = count === 1 ? `<tr><td colspan="7" style="text-align: center; padding: 20px;">Tidak ada data.</td></tr>` : html;
+        
         document.querySelectorAll(".clickable-row").forEach(row => {
             row.onclick = function() {
                 navigator.clipboard.writeText(this.getAttribute("data-billing")).then(() => showToast("Disalin: " + this.getAttribute("data-billing")));
             };
         });
+        applyFilters();
     } catch (err) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data.</td></tr>`;
     }
@@ -573,9 +573,13 @@ function applyFilters() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+function refreshAllData() {
     loadTableData(csvUrlSPB, "spbTbody", "spb");
     loadTableData(csvUrlBunker, "bunkerTbody", "bunker");
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    refreshAllData();
 
     document.querySelectorAll(".nav-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -609,7 +613,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".clickable-row").forEach(r => r.classList.remove("hidden-row"));
     });
 
-    setTimeout(() => window.location.reload(), autoRefreshSeconds * 1000);
+    setInterval(refreshAllData, autoRefreshSeconds * 1000);
 });
 </script>
 </body>
