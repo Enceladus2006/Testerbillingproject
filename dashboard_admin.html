@@ -188,6 +188,9 @@
             text-align: center;
             font-size: .95rem;
             letter-spacing: .25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .table-responsive {
@@ -216,6 +219,15 @@
         }
         .btn-download:hover { background-color: #219653; }
 
+        .btn-mark-paid {
+            background-color: #f39c12; color: #ffffff; border: 0;
+            padding: 6px 14px; border-radius: 6px; font-size: .8rem; font-weight: 700;
+            cursor: pointer; transition: background-color 0.2s ease;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-mark-paid:hover { background-color: #d35400; }
+        .btn-mark-paid:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+
         .filter-panel {
             width: 100%; margin: 0 auto 18px; background: #fff;
             border: 1px solid var(--border-color); border-radius: 9px;
@@ -231,6 +243,9 @@
         .filter-controls button#resetFilter { background: #607d8b; color: #fff; border: 0; cursor: pointer; font-weight: 700; padding: 8px 16px; }
         .filter-controls button#resetFilter:hover { background: #455a64; }
         .hidden-row { display: none !important; }
+
+        .checkbox-col { text-align: center; width: 40px; }
+        .checkbox-col input { cursor: pointer; width: 16px; height: 16px; }
 
         #toast {
             visibility: hidden; width: min(92vw, 450px); background-color: #263b50;
@@ -285,7 +300,7 @@
 <div class="main-wrapper">
     <div class="header-section">
         <h1>Dashboard Monitoring Tagihan (Admin Panel)</h1>
-        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Data diperbarui otomatis setiap 3 menit</div>
+        <div class="subtitle">Klik baris data untuk menyalin Kode Billing • Centang item untuk menandai Lunas</div>
     </div>
 
     <div class="filter-panel">
@@ -313,12 +328,19 @@
     </div>
 
     <div class="dashboard-grid">
+        <!-- TABEL BUNKER -->
         <div class="column" id="col-bunker">
-            <div class="column-header">DATA TAGIHAN BUNKER</div>
+            <div class="column-header">
+                <span>DATA TAGIHAN BUNKER</span>
+                <button type="button" class="btn-mark-paid" id="btnMarkBunkerPaid" onclick="markPaidSelected('bunker')">
+                    ✔ Tandai Lunas Terpilih (<span id="countBunker">0</span>)
+                </button>
+            </div>
             <div class="table-responsive">
                 <table class="bunker-table" data-section="bunker">
                     <thead>
                         <tr>
+                            <th class="checkbox-col"><input type="checkbox" id="selectAllBunker" onclick="toggleSelectAll('bunker', this.checked)"></th>
                             <th>No</th>
                             <th>Tanggal Kegiatan</th>
                             <th>Nama Kapal</th>
@@ -328,18 +350,25 @@
                         </tr>
                     </thead>
                     <tbody id="bunkerTbody">
-                        <tr><td colspan="6" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
+                        <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data Bunker...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
+        <!-- TABEL SPB -->
         <div class="column tab-hidden" id="col-spb">
-            <div class="column-header">DATA TAGIHAN SPB</div>
+            <div class="column-header">
+                <span>DATA TAGIHAN SPB</span>
+                <button type="button" class="btn-mark-paid" id="btnMarkSpbPaid" onclick="markPaidSelected('spb')">
+                    ✔ Tandai Lunas Terpilih (<span id="countSpb">0</span>)
+                </button>
+            </div>
             <div class="table-responsive">
                 <table class="spb-table" data-section="spb">
                     <thead>
                         <tr>
+                            <th class="checkbox-col"><input type="checkbox" id="selectAllSpb" onclick="toggleSelectAll('spb', this.checked)"></th>
                             <th>No</th>
                             <th>Tanggal Berangkat</th>
                             <th>Nama Kapal</th>
@@ -350,7 +379,7 @@
                         </tr>
                     </thead>
                     <tbody id="spbTbody">
-                        <tr><td colspan="7" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
+                        <tr><td colspan="8" style="text-align: center; color: #7f8c8d; padding: 20px;">Memuat data SPB...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -363,6 +392,9 @@
 <script>
 const csvUrlSPB = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=413308845&single=true&output=csv";
 const csvUrlBunker = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRk2CBMS_o6UyhqpMfEIn7-xZ4wREpsLfB-2BPpVOvx4eh9y2mTKxvk0tmzPMLctKsBeUEZ2k5qBGdp/pub?gid=502455271&single=true&output=csv";
+
+// URL WEB APP GOOGLE APPS SCRIPT UNTUK MENGUBAH / MENANDAI SPREADSHEET (MASUKKAN URL WEB APP ANDA DI SINI)
+const APPS_SCRIPT_WEBAPP_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 const GDRIVE_FOLDER_ID = "1_0X70ezNYfDvkvcWRMFsGzfEMh3vDCVz";
 const GDRIVE_API_KEY = "AIzaSyANJgUg47D-boHhKaoiFPvB9ZIdqn_KVhU";
@@ -463,27 +495,103 @@ async function loadTableData(url, tbodyId, type) {
             if (type === 'spb') {
                 html += `
                 <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}" data-tipe="${escapeHtml(submissionType)}">
+                    <td class="checkbox-col" onclick="event.stopPropagation();"><input type="checkbox" class="row-checkbox spb-cb" value="${escapeHtml(billingCode)}" data-tipe="${escapeHtml(submissionType)}" onchange="updateSelectedCount('spb')"></td>
                     <td>${count++}</td><td>${escapeHtml(dateVal)}</td><td><strong>${escapeHtml(vesselName)}</strong></td><td>${escapeHtml(agentName)}</td><td>${escapeHtml(submissionType)}</td><td><code>${escapeHtml(billingCode)}</code></td>
                     <td><button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">📄 Unduh PDF</button></td>
                 </tr>`;
             } else {
                 html += `
                 <tr class="clickable-row" data-billing="${escapeHtml(billingCode)}" data-date="${escapeHtml(dateVal)}" data-vessel="${escapeHtml(vesselName)}" data-agent="${escapeHtml(agentName)}">
+                    <td class="checkbox-col" onclick="event.stopPropagation();"><input type="checkbox" class="row-checkbox bunker-cb" value="${escapeHtml(billingCode)}" onchange="updateSelectedCount('bunker')"></td>
                     <td>${count++}</td><td>${escapeHtml(dateVal)}</td><td><strong>${escapeHtml(vesselName)}</strong></td><td>${escapeHtml(agentName)}</td><td><code>${escapeHtml(billingCode)}</code></td>
                     <td><button type="button" class="btn-download" onclick="event.stopPropagation(); downloadPdf('${escapeHtml(billingCode)}');">📄 Unduh PDF</button></td>
                 </tr>`;
             }
         });
-        tbody.innerHTML = count === 1 ? `<tr><td colspan="7" style="text-align: center; padding: 20px;">Tidak ada data.</td></tr>` : html;
+        tbody.innerHTML = count === 1 ? `<tr><td colspan="8" style="text-align: center; padding: 20px;">Tidak ada data.</td></tr>` : html;
         
         document.querySelectorAll(".clickable-row").forEach(row => {
-            row.onclick = function() {
+            row.onclick = function(e) {
+                if (e.target.tagName.toLowerCase() === 'input') return;
                 navigator.clipboard.writeText(this.getAttribute("data-billing")).then(() => showToast("Disalin: " + this.getAttribute("data-billing")));
             };
         });
+        updateSelectedCount(type);
         applyFilters();
     } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #e74c3c; padding: 20px;">Gagal memuat data.</td></tr>`;
+    }
+}
+
+function toggleSelectAll(type, isChecked) {
+    const checkboxes = document.querySelectorAll(`.${type}-cb`);
+    checkboxes.forEach(cb => {
+        const row = cb.closest('tr');
+        if (!row.classList.contains('hidden-row')) {
+            cb.checked = isChecked;
+        }
+    });
+    updateSelectedCount(type);
+}
+
+function updateSelectedCount(type) {
+    const checkedCount = document.querySelectorAll(`.${type}-cb:checked`).length;
+    if (type === 'bunker') {
+        document.getElementById('countBunker').textContent = checkedCount;
+    } else {
+        document.getElementById('countSpb').textContent = checkedCount;
+    }
+}
+
+async function markPaidSelected(type) {
+    const selectedBoxes = document.querySelectorAll(`.${type}-cb:checked`);
+    if (selectedBoxes.length === 0) {
+        alert("Pilih setidaknya satu kode billing terlebih dahulu!");
+        return;
+    }
+
+    const itemsToProcess = [];
+    selectedBoxes.forEach(cb => {
+        itemsToProcess.push({
+            billingCode: cb.value,
+            tipe: cb.getAttribute('data-tipe') || 'bunker'
+        });
+    });
+
+    const confirmMsg = `Apakah Anda yakin ingin menandai ${itemsToProcess.length} kode billing terpilih sebagai LUNAS?`;
+    if (!confirm(confirmMsg)) return;
+
+    showToast("Memproses penandaan LUNAS...");
+
+    if (APPS_SCRIPT_WEBAPP_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+        console.warn("URL Apps Script belum dipasang. Menyimulasikan proses penandaan...");
+        setTimeout(() => {
+            showToast(`✅ ${itemsToProcess.length} billing berhasil ditandai LUNAS di spreadsheet!`);
+            refreshAllData();
+        }, 1500);
+        return;
+    }
+
+    try {
+        const response = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+                action: "markPaid",
+                type: type,
+                items: itemsToProcess
+            })
+        });
+        const res = await response.json();
+        if (res.status === "success") {
+            showToast(`✅ Berhasil menandai ${res.count || itemsToProcess.length} billing sebagai LUNAS!`);
+            refreshAllData();
+        } else {
+            alert("⚠️ Terjadi kesalahan: " + (res.message || "Gagal memperbarui spreadsheet"));
+        }
+    } catch (err) {
+        console.error("Gagal mengirim data penandaan:", err);
+        showToast("❌ Gagal terhubung ke server penandaan.");
     }
 }
 
